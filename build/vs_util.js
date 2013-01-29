@@ -90,7 +90,7 @@ Point.prototype = {
 /********************************************************************
                       Export
 *********************************************************************/
-util.Point = Point;
+vs.Point = Point;
 /**
   Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and 
   contributors. All rights reserved
