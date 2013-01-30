@@ -179,19 +179,24 @@ vs.CSSMatrix = ('WebKitCSSMatrix' in window)?window.WebKitCSSMatrix:
  * @param {Function} callback A parameter specifying a function to call
  *        when it's time to update your animation for the next repaint.
  */
-vs.requestAnimationFrame = window.requestAnimationFrame ||
+var requestAnimationFrame = 
+  window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
   window.oRequestAnimationFrame ||
   window.msRequestAnimationFrame ||
   function (callback) { window.setTimeout (callback, 1000 / 60); };
 
-vs.cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
+vs.requestAnimationFrame = requestAnimationFrame.bind (window);
+
+var cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
   window.webkitCancelAnimationFrame ||
   window.mozCancelAnimationFrame ||
   window.oCancelAnimationFrame ||
   window.msCancelAnimationFrame ||
   clearTimeout;
+
+vs.cancelRequestAnimationFrame = cancelRequestAnimationFrame.bind (window);
 
 /********************************************************************
 
