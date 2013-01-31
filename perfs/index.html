@@ -1,0 +1,129 @@
+<html>
+<head>
+  <script type="text/javascript" src="../../tools/ext/jsunit/app/jsUnitCore.js"></script>
+</head>
+
+<body onload="runTest ()">
+<script language="javascript">
+
+  var _toString = Object.prototype.toString;
+  var NUMBER_CLASS = '[object Number]';
+  var ARRAY_CLASS = '[object Array]';
+
+  function testIsArray ()
+  {
+    var isArray1 = Array.isArray ||
+      function (object) { return _toString.call (object) === ARRAY_CLASS;};
+         
+    function isArray2 (object)
+    {
+      if (typeof Array.isArray == 'function')
+      {
+        return Array.isArray (object);
+      }
+      return _toString.call (object) === ARRAY_CLASS;
+    };
+
+    var nb = 1000000;
+    var t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isArray1 ('10');
+      r = isArray1 (10);
+      r = isArray1 (10.4);
+      r = isArray1 (undefined);
+      r = isArray1 (null);
+      r = isArray1 ({});
+      r = isArray1 ([]);
+    }
+    console.log ('t1: ' + (new Date ().getTime () - t));
+    
+    t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isArray2 ('10');
+      r = isArray2 (10);
+      r = isArray2 (10.4);
+      r = isArray2 (undefined);
+      r = isArray2 (null);
+      r = isArray2 ({});
+      r = isArray2 ([]);
+    }
+    console.log ('t2: ' + (new Date ().getTime () - t));
+    
+    t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isArray2 ('10');
+      r = Array.isArray (10);
+      r = Array.isArray (10.4);
+      r = Array.isArray (undefined);
+      r = Array.isArray (null);
+      r = Array.isArray ({});
+      r = Array.isArray ([]);
+    }
+    console.log ('t3: ' + (new Date ().getTime () - t));
+  }
+  
+  function testIsNumber ()
+  {
+    function isNumber1 (o) {
+      return _toString.call (o) === NUMBER_CLASS;
+    }
+    
+    function isNumber2 (o) {
+      return typeof o === 'number' && isFinite(o);
+    }
+    
+    console.log ('Algo1 -> \'10\': ' + isNumber1 ('10'));
+    console.log ('Algo1 -> 10: ' + isNumber1 (10));
+    console.log ('Algo1 -> 10.4: ' + isNumber1 (10.4));
+    console.log ('Algo1 -> undefined: ' + isNumber1 (undefined));
+    console.log ('Algo1 -> null: ' + isNumber1 (null));
+    console.log ('Algo1 -> {}: ' + isNumber1 ({}));
+    console.log ('Algo1 -> []: ' + isNumber1 ([]));
+    
+    console.log ('Algo2 -> \'10\': ' + isNumber2 ('10'));
+    console.log ('Algo2 -> 10: ' + isNumber2 (10));
+    console.log ('Algo2 -> 10.4: ' + isNumber2 (10.4));
+    console.log ('Algo2 -> undefined: ' + isNumber2 (undefined));
+    console.log ('Algo2 -> null: ' + isNumber2 (null));
+    console.log ('Algo2 -> {}: ' + isNumber2 ({}));
+    console.log ('Algo2 -> []: ' + isNumber2 ([]));
+    
+    var nb = 1000000;
+    var t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isNumber1 ('10');
+      r = isNumber1 (10);
+      r = isNumber1 (10.4);
+      r = isNumber1 (undefined);
+      r = isNumber1 (null);
+      r = isNumber1 ({});
+      r = isNumber1 ([]);
+    }
+    console.log ('t1: ' + (new Date ().getTime () - t));
+    
+    t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isNumber2 ('10');
+      r = isNumber2 (10);
+      r = isNumber2 (10.4);
+      r = isNumber2 (undefined);
+      r = isNumber2 (null);
+      r = isNumber2 ({});
+      r = isNumber2 ([]);
+    }
+    console.log ('t2: ' + (new Date ().getTime () - t));
+    
+  }
+  function runTest ()
+  {
+    testIsArray ();
+    testIsNumber ()
+  }
+</script>
+</body>
+</html>
