@@ -601,14 +601,8 @@ function isElement (object)
  *
  * @param {Object} object The object to test.
  **/
-function isArray (object)
-{
-  if (typeof Array.isArray == 'function')
-  {
-    return Array.isArray (object);
-  }
-  return _toString.call (object) === ARRAY_CLASS;
-};
+var isArray = Array.isArray ||
+  function (object) { return _toString.call (object) === ARRAY_CLASS;};
 
 /**
  *  Returns `true` if `object` is an Function; `false` otherwise.
