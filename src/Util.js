@@ -662,7 +662,7 @@ function isString (object)
  **/
 function isNumber (object)
 {
-  return _toString.call (object) === NUMBER_CLASS;
+  return typeof o === 'number' && isFinite(o);
 };
 
 /**
