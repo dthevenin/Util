@@ -656,7 +656,7 @@ function isString (object)
  **/
 function isNumber (object)
 {
-  return typeof o === 'number' && isFinite(o);
+  return typeof object === 'number' && isFinite(object);
 };
 
 /**
