@@ -1433,6 +1433,21 @@ function setElementInnerText (elem, text)
   }
 };
 
+/** 
+ * @param {Element} elem The element
+ * @param {String} txt The text
+ **/
+function safeInnerHTML (elem, text)
+{
+  if (!elem) { return; }
+  var data;
+  
+  if (window.toStaticHTML) data = window.toStaticHTML (text);
+  else data = text;
+  
+  elem.innerHTML = data;
+};
+
 /**
  *@private
  */
@@ -2009,6 +2024,7 @@ util.extend (util, {
   getBoundingClientRect:      
     (vsTestElem && vsTestElem.getBoundingClientRect)?
     _getBoundingClientRect_api2:_getBoundingClientRect_api1,
+  safeInnerHTML:              safeInnerHTML,
   
   // other
   importFile:           importFile,
