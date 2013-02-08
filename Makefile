@@ -5,13 +5,13 @@
 ##
 ##############################################################
 
-###                     Declaration 
+###                     Declaration
 ##############################################################
 
 SHELL = /bin/sh
 CHMOD = chmod
 CP = cp
-XTEMP = ../lib/manage_template.sh 
+XTEMP = ../lib/manage_template.sh
 MV = mv
 NOOP = $(SHELL) -c true
 RM_F = rm -f
@@ -30,21 +30,19 @@ JAVA = java
 COMPILE = $(JAVA) -jar tools/closurecompiler/compiler.jar --language_in=ECMASCRIPT5
 COMPILE_ADV = $(JAVA) -jar tools/closurecompiler/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS
 COMPILE_YUI = $(JAVA) -cp tools/yuicompressor/jargs-1.0.jar:tools/yuicompressor/rhino-1.6R7.jar -jar tools/yuicompressor/yuicompressor-2.4.2.jar
-GENDOC = $(JAVA) -jar tools/jsdoc-toolkit/jsrun.jar tools/jsdoc-toolkit/app/run.js 
+GENDOC = $(JAVA) -jar tools/jsdoc-toolkit/jsrun.jar tools/jsdoc-toolkit/app/run.js
 COMPILE_LESS = /usr/local/bin/lessc
 
 ###                         EXPORT HEADERS / FOOTERS
 ##############################################################
 
 
-EXPORT_HEADER = "(function () {\n\
-if (typeof exports === 'undefined') { exports = this; }\n"
+EXPORT_HEADER = "(function () {\n"
 
 EXPORT_FOOTER = "}).call(this);"
 
 VS_EXPORT_HEADER = "(function(){ \n\
-if (typeof exports === 'undefined') { exports = this; }\n\
-var vs = exports.vs || {}; exports.vs = vs;\n"
+var vs = this.vs = this.vs || {};\n"
 
 VS_EXPORT_FOOTER = "}).call(this);"
 
@@ -57,7 +55,7 @@ else
   UTIL_HEADER = $(VS_EXPORT_HEADER)
   UTIL_FOOTER = $(EXPORT_FOOTER)
   CSS_MATRIX_HEADER = $(EXPORT_HEADER)
-  CSS_MATRIX_FOOTER = "\nexports.FirminCSSMatrix = FirminCSSMatrix;\n"$(EXPORT_FOOTER)
+  CSS_MATRIX_FOOTER = "\nthis.FirminCSSMatrix = FirminCSSMatrix;\n"$(EXPORT_FOOTER)
 endif
 
 ###                         RELEASE
@@ -76,7 +74,7 @@ clean :: clean_libs
 
 clean_libs:
 	-$(RM_RF) build
-		
+
 makedirs:
 	-$(MKPATH) build/
 
@@ -85,7 +83,7 @@ makedirs:
 
 util_js_release: build/vs_util.js
 	-$(COMPILE) --js=build/vs_util.js --js_output_file=build/vs_util_min.js
-	
+
 util_js_debug: build/vs_util.js
 
 build/vs_util.js: src/Util.js
@@ -98,9 +96,9 @@ build/vs_util.js: src/Util.js
 ###                    libs
 ##############################################################
 
-libs_release: build/firminCSSMatrix.js 
+libs_release: build/firminCSSMatrix.js
 	-$(COMPILE) --js=build/firminCSSMatrix.js --js_output_file=build/firminCSSMatrix_min.js
-	
+
 libs_debug: build/firminCSSMatrix.js
 
 build/firminCSSMatrix.js: src/libs/FirminCSSMatrix.js
