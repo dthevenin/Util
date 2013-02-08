@@ -1,7 +1,5 @@
 (function(){ 
- var vs = this.vs = this.vs || {};
-
-var util = vs.util = {};
+ var vs = this.vs = this.vs || {}, util = vs.util = {};
 
 /**
   Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and 
