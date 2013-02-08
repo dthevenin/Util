@@ -1,6 +1,5 @@
 (function(){ 
- if (typeof exports === 'undefined') { exports = this; }
- var vs = exports.vs || {}; exports.vs = vs;
+ var vs = this.vs = this.vs || {};
 
 var util = vs.util = {};
 

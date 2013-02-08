@@ -1,5 +1,4 @@
 (function () {
- if (typeof exports === 'undefined') { exports = this; }
 
 /**
  *  class FirminCSSMatrix
@@ -630,5 +629,5 @@ FirminCSSMatrix.prototype.toString = function() {
     return self[p].toFixed(6);
   }).join(", ") + ")";
 };
-exports.FirminCSSMatrix = FirminCSSMatrix;
+this.FirminCSSMatrix = FirminCSSMatrix;
 }).call(this);
