@@ -42,7 +42,7 @@ EXPORT_HEADER = "(function () {\n"
 EXPORT_FOOTER = "}).call(this);"
 
 VS_EXPORT_HEADER = "(function(){ \n\
-var vs = this.vs = this.vs || {};\n"
+var vs = this.vs = this.vs || {}, util = vs.util = {};\n"
 
 VS_EXPORT_FOOTER = "}).call(this);"
 
@@ -88,7 +88,6 @@ util_js_debug: build/vs_util.js
 
 build/vs_util.js: src/Util.js
 	$(ECHO) $(UTIL_HEADER) >> $@
-	$(ECHO) "var util = vs.util = {};\n" >> $@
 	$(CAT) src/Point.js >> $@
 	$(CAT) src/Util.js >> $@
 	$(ECHO) $(UTIL_FOOTER) >> $@
