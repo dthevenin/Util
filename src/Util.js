@@ -1,23 +1,23 @@
 /**
-  Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and 
+  Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and
   contributors. All rights reserved
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /********************************************************************
-                   
+
 *********************************************************************/
 
 var document = (typeof window != "undefined")?window.document:null;
@@ -39,11 +39,11 @@ if (vsTestStyle)
   if (vsTestStyle.webkitTransform !== undefined)
     vs.SUPPORT_3D_TRANSFORM =
       'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix ();
-      
-  else if (vsTestStyle.MozTransform !== undefined) 
+
+  else if (vsTestStyle.MozTransform !== undefined)
     vs.SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
 
-  else if (vsTestStyle.msTransform !== undefined) 
+  else if (vsTestStyle.msTransform !== undefined)
     vs.SUPPORT_3D_TRANSFORM =
      'MSCSSMatrix' in window && 'm11' in new MSCSSMatrix ();
 
@@ -86,7 +86,7 @@ vs.CSSMatrix = ('WebKitCSSMatrix' in window)?window.WebKitCSSMatrix:
  * @param {Function} callback A parameter specifying a function to call
  *        when it's time to update your animation for the next repaint.
  */
-var requestAnimationFrame = 
+var requestAnimationFrame =
   window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
@@ -147,7 +147,7 @@ function _extend_api2 (destination, source)
   for (var property in source)
   {
     var desc = Object.getOwnPropertyDescriptor (source, property);
-    
+
     if (desc && (desc.get || desc.set))
     {
       util.defineProperty (destination, property, desc);
@@ -182,12 +182,12 @@ var extendClass = function (obj, extension)
 {
   if (!obj || !extension) { return; }
   if (!obj.prototype || !extension.prototype) { return; }
-  
+
   try
   {
     if (Object.__proto__)
     {
-      obj.prototype.__proto__ = extension.prototype;      
+      obj.prototype.__proto__ = extension.prototype;
     }
     else
     {
@@ -196,7 +196,7 @@ var extendClass = function (obj, extension)
 
       util.extend (obj.prototype, proto);
     }
-    
+
     if (!obj._properties_) obj._properties_ = [];
     if (extension._properties_)
     {
@@ -308,18 +308,18 @@ function _defineProperty_api2 (obj, prop_name, desc)
   {
     throw new TypeError ("bad desc");
   }
-  
+
   if (typeof prop_name != "string" || prop_name === null)
   {
     throw new TypeError ("bad property name");
   }
-  
+
   var d = {};
-  
+
   if (hasProperty (desc, "enumerable")) d.enumerable = !!desc.enumerable;
-  else d.enumerable = true; 
+  else d.enumerable = true;
   if (hasProperty (desc, "configurable")) d.configurable = !!desc.configurable;
-  else d.configurable = true; 
+  else d.configurable = true;
   if (hasProperty (desc, "value")) d.value = desc.value;
   if (hasProperty (desc, "writable")) d.writable = !!desc.writable;
   if (hasProperty (desc, "get"))
@@ -340,7 +340,7 @@ function _defineProperty_api2 (obj, prop_name, desc)
 }
 
 /**
- * Defines a new property directly on the object's prototype, or modifies an 
+ * Defines a new property directly on the object's prototype, or modifies an
  * existing property on an object's prototype.<br/><br/>
  *
  * Property descriptors present in objects come in two main flavors: data
@@ -372,7 +372,7 @@ function _defineProperty_api2 (obj, prop_name, desc)
  *
  * @memberOf vs.util
  *
- * @param {Object} the_class The object's prototype on which to define the 
+ * @param {Object} the_class The object's prototype on which to define the
  * property.
  * @param {String} prop_name The name of the property to be defined or modified.
  * @param {Object} desc The descriptor for the property being defined or
@@ -419,8 +419,8 @@ function defineClassProperties (the_class, properties)
     throw ("defineClassProperties on a Class without prototype");
   }
 
-  properties = Object (properties);  
-  var keys = _keys (properties);  
+  properties = Object (properties);
+  var keys = _keys (properties);
   for (var i = 0; i < keys.length; i++)
   {
     var prop_name = keys[i]
@@ -433,67 +433,67 @@ function defineClassProperties (the_class, properties)
                     Object management
 *********************************************************************/
 
-/** 
+/**
  * @private
  * @const
  */
 NULL_TYPE = 'Null';
 
-/** 
+/**
  * @private
  * @const
  */
 UNDEFINED_TYPE = 'Undefined';
 
-/** 
+/**
  * @private
  * @const
  */
 BOOLEAN_TYPE = 'Boolean';
 
-/** 
+/**
  * @private
  * @const
  */
 NUMBER_TYPE = 'Number';
 
-/** 
+/**
  * @private
  * @const
  */
 STRING_TYPE = 'String';
 
-/** 
+/**
  * @private
  * @const
  */
 OBJECT_TYPE = 'Object';
 
-/** 
+/**
  * @private
  * @const
  */
 BOOLEAN_CLASS = '[object Boolean]';
 
-/** 
+/**
  * @private
  * @const
  */
 NUMBER_CLASS = '[object Number]';
 
-/** 
+/**
  * @private
  * @const
  */
 STRING_CLASS = '[object String]';
 
-/** 
+/**
  * @private
  * @const
  */
 ARRAY_CLASS = '[object Array]';
 
-/** 
+/**
  * @private
  * @const
  */
@@ -522,7 +522,7 @@ function clone (object)
         destination[property] = clone (object [property]);
       }
       return destination; break;
-      
+
     case ARRAY_CLASS:
       destination = [];
       for (var i = 0; i < object.length; i++)
@@ -565,15 +565,15 @@ var _toString = Object.prototype.toString;
 
 /**
  *  Returns `true` if `object` is a DOM node of type 1; `false` otherwise.
- *  
+ *
  *  @example
- *  
+ *
  *  vs.util.isElement(new Element('div'));
  *  //-> true
  *
  *  vs.util.isElement(document.createElement('div'));
  *  //-> true
- *      
+ *
  *  vs.util.isElement(document.createTextNode('foo'));
  *  //-> false
  *
@@ -585,15 +585,15 @@ function isElement (object)
 {
   return !!(object && object.nodeType === 1);
 };
-  
+
 /**
  *  Returns `true` if `object` is an [[Array]]; `false` otherwise.
- *  
+ *
  *  @example
- *  
+ *
  *  vs.util.isArray([]);
  *  //-> true
- *      
+ *
  *  vs.util.isArray({ });
  *  //-> false
  *
@@ -618,12 +618,12 @@ function isFunction (object)
 
 /**
  *  Returns `true` if `object` is an String; `false` otherwise.
- *  
+ *
  *  @example
- *  
+ *
  *  vs.util.isString ("qwe");
  *  //-> true
- *      
+ *
  *  vs.util.isString (123);
  *  //-> false
  *
@@ -638,15 +638,15 @@ function isString (object)
 
 /**
  *  Returns `true` if `object` is an Number; `false` otherwise.
- *  
+ *
  *  @example
- *  
+ *
  *  vs.util.isNumber (123);
  *  //-> true
- *      
+ *
  *  vs.util.isNumber (1.23);
  *  //-> true
- *      
+ *
  *  vs.util.isNumber ("123");
  *  //-> false
  *
@@ -656,23 +656,24 @@ function isString (object)
  **/
 function isNumber (object)
 {
-  return typeof object === 'number' && isFinite(object);
+  return (typeof object === 'number' && isFinite(object)) ||
+      object instanceof Number;
 };
 
 /**
  *  Returns `true` if `object` is of type `undefined`; `false` otherwise.
- *  
+ *
  *  @example
- *  
+ *
  *  vs.util.isUndefined ();
  *  //-> true
- *      
+ *
  *  vs.util.isUndefined (undefined);
  *  //-> true
- *      
+ *
  *  vs.util.isUndefined (null);
  *  //-> false
- *      
+ *
  *  vs.util.isUndefined (0);
  *  //-> false
  *
@@ -706,7 +707,7 @@ function hasClassName (element, className)
 {
   if (!element) { return; }
   var elementClassName = element.className;
-  return (elementClassName && elementClassName.length > 0 && 
+  return (elementClassName && elementClassName.length > 0 &&
     (elementClassName === className ||
     new RegExp("(^|\\s)" + className + "(\\s|$)").test(elementClassName)));
 }
@@ -769,7 +770,7 @@ function removeClassName ()
  *
  *  @memberOf vs.util
  *
- * @param {String} className the className 
+ * @param {String} className the className
 */
 function toggleClassName (element, className)
 {
@@ -792,7 +793,7 @@ function toggleClassName (element, className)
 function htmlEncode (str)
 {
   if (!isString (str)) return '';
-  
+
   return str.replace (/&/g, "&amp;").
     replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -807,7 +808,7 @@ function htmlEncode (str)
 function strip (str)
 {
   if (!isString (str)) return '';
-  
+
   return str.replace(/^\s+/, '').replace(/\s+$/, '');
 }
 
@@ -822,7 +823,7 @@ function strip (str)
 function camelize (str)
 {
   if (!isString (str)) return '';
-  
+
   var parts = str.split ('-'), len = parts.length;
   if (len === 1) { return parts [0]; }
 
@@ -847,12 +848,12 @@ function camelize (str)
 function capitalize (str)
 {
   if (!isString (str)) return '';
-  
+
   return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
 }
 
 /**
- *  Converts a camelized string into a series of words separated by an 
+ *  Converts a camelized string into a series of words separated by an
  *  underscore (_).
  *
  *  @memberOf vs.util
@@ -873,7 +874,7 @@ function underscore (str)
 
 /**
  *  Parse a json string. <p/>
- *  This function use the JSON.parse function but it manage also 
+ *  This function use the JSON.parse function but it manage also
  *  Date parsing wich is not managed by the JSON.parse
  *
  *  @memberOf vs.util
@@ -886,9 +887,9 @@ function parseJSON (json)
 {
   if (!json) return null;
   var temp = JSON.parse (json);
-  
+
   if (!__date_reg_exp.test (json)) return temp;
-  
+
   function manageDate (obj)
   {
     if (isString (obj))
@@ -919,7 +920,7 @@ function parseJSON (json)
 
 /**
  *  Returns the height of `element`.<br/>
- *  
+ *
  *  This method returns correct values on elements whose display is set to
  *  `none` either in an inline style rule or in an CSS stylesheet.
  *
@@ -931,13 +932,13 @@ function parseJSON (json)
 function getElementHeight (elem)
 {
   if (!isElement (elem)) return;
-  
+
   return getElementDimensions (elem).height;
 };
 
 /**
  *  Returns the width of `element`.<br/>
- *  
+ *
  *  This method returns correct values on elements whose display is set to
  *  `none` either in an inline style rule or in an CSS stylesheet.
  *
@@ -949,7 +950,7 @@ function getElementHeight (elem)
 function getElementWidth (elem)
 {
   if (!isElement (elem)) return;
-  
+
   return getElementDimensions (elem).width;
 };
 
@@ -963,36 +964,36 @@ function getElementWidth (elem)
  *  browser properties.
  *
  *  @memberOf vs.util
- * 
+ *
  * @param {Element} elem The element
  *	@returns {Object} the key/value width & height
  **/
 function getElementDimensions (elem)
 {
   if (!isElement (elem)) return {};
-  
+
   var display = getElementStyle (elem, 'display'),
     els = elem.style, originalVisibility = els.visibility,
     originalPosition = els.position, originalDisplay = els.display,
     originalWidth = 0, originalHeight = 0;
-    
+
   if (display !== 'none' && display !== null) // Safari bug
   {
     return {width: elem.offsetWidth, height: elem.offsetHeight};
   }
   // All *Width and *Height properties give 0 on elements with display none,
   // so enable the element temporarily
-    
+
   els.visibility = 'hidden';
   els.position = 'absolute';
   els.display = 'block';
-  
+
   originalWidth = elem.clientWidth;
   originalHeight = elem.clientHeight;
   els.display = originalDisplay;
   els.position = originalPosition;
   els.visibility = originalVisibility;
-  
+
   return {width: originalWidth, height: originalHeight};
 };
 
@@ -1007,14 +1008,14 @@ function getElementDimensions (elem)
  *  (fully transparent) and `1` (fully opaque), position properties
  *  (`left`, `top`, `right` and `bottom`) and when getting the dimensions
  *  (`width` or `height`) of hidden elements.
- *  
+ *
  *  @example
- *  
+ *
  *  getElementStyle (elem, 'fontSize');
  *  // -> '12px'
  *
  *  @memberOf vs.util
- * 
+ *
  * @param {Element} elem The element
  * @param {String} style The style to find
  *	@returns {Object} the key/value width & height
@@ -1022,7 +1023,7 @@ function getElementDimensions (elem)
 function getElementStyle (elem, style)
 {
   if (!isElement (elem)) return;
-  
+
   style = style === 'float' ? 'cssFloat' : camelize (style);
   var value = elem.style[style], css;
   if (!value || value === 'auto')
@@ -1053,13 +1054,13 @@ function getElementStyle (elem, style)
 function setElementStyle (elem, styles)
 {
   if (!isElement (elem)) return;
-  
+
   var elementStyle = elem.style, property;
 
   for (property in styles)
   {
     if (property === 'opacity')
-    { 
+    {
       setElementOpacity (elem, styles[property]);
     }
     else
@@ -1075,15 +1076,15 @@ function setElementStyle (elem, styles)
   }
 };
 
-/** 
+/**
  *  Sets the visual opacity of an element while working around inconsistencies
  *  in various browsers. The `opacity` argument should be a floating point
  *  number, where the value of `0` is fully transparent and `1` is fully opaque.
- *  
+ *
  *  @example
  *  // set to 50% transparency
  *  setElementOpacity (element, 0.5);
- *      
+ *
  *  // these are equivalent, but allow for setting more than
  *  // one CSS property at once:
  *  setElementStyle (element, { opacity: 0.5 });
@@ -1098,14 +1099,14 @@ function setElementOpacity (elem, value)
 {
   if (!isElement (elem)) return;
   var elementStyle = elem.style;
-  
+
   if (isUndefined (value)) elementStyle.removeProperty ('opacity');
-  
+
   elementStyle.opacity = (value === 1 || value === '') ? '' :
     (value < 0.00001) ? 0 : value;
 };
 
-/** 
+/**
  *  Returns the opacity of the element.
  *
  *  @memberOf vs.util
@@ -1116,7 +1117,7 @@ function setElementOpacity (elem, value)
 function getElementOpacity (elem)
 {
   if (!isElement (elem)) return;
-  
+
   return getElementStyle (elem, 'opacity');
 };
 
@@ -1135,7 +1136,7 @@ function getElementAbsolutePosition (element, force)
   if (!force && element.getBoundingClientRect)
   {
     var rec = element.getBoundingClientRect ();
-    if (rec) { return new vs.Point (rec.left, rec.top); } 
+    if (rec) { return new vs.Point (rec.left, rec.top); }
   }
   var x = 0;
   var y = 0;
@@ -1166,7 +1167,7 @@ function getElementAbsolutePosition (element, force)
 /**
  * @private
  */
-function _getBoundingClientRect_api1 (e) 
+function _getBoundingClientRect_api1 (e)
 {
   var rec = getElementAbsolutePosition (e);
   return {
@@ -1185,7 +1186,7 @@ function _getBoundingClientRect_api2 (e)
   return (e && e.getBoundingClientRect)?e.getBoundingClientRect ():null;
 };
 
-/** 
+/**
  *  Set the absolute element position.
  *
  *  @memberOf vs.util
@@ -1198,12 +1199,12 @@ function setElementPos (elem, x, y)
 {
   if (!elem) { return; }
   var elementStyle = elem.style;
-  
+
   elementStyle.left = x + 'px';
   elementStyle.top = y + 'px';
 }
 
-/** 
+/**
  * Set the element size
  *
  *  @memberOf vs.util
@@ -1216,12 +1217,12 @@ function setElementSize (elem, w, h)
 {
   if (!elem) { return; }
   var elementStyle = elem.style;
-  
+
   elementStyle.width = w + 'px';
   elementStyle.height = h + 'px';
 }
 
-/** 
+/**
  *  Set the element HTML visibility
  *
  *  @memberOf vs.util
@@ -1233,7 +1234,7 @@ function setElementVisibility (elem, v)
 {
   if (!elem) { return; }
   var elementStyle = elem.style;
-  
+
   if (elementStyle || util.isString (elem.innerHTML))
   {
     if (v)
@@ -1260,7 +1261,7 @@ function setElementVisibility (elem, v)
   }
 }
 
-/** 
+/**
  *  Return true if the element is visible, false otherwise
  *
  *  @memberOf vs.util
@@ -1272,7 +1273,7 @@ function isElementVisible (elem)
 {
   if (!elem) { return false; }
   var elementStyle = elem.style;
-  
+
   if (elementStyle || util.isString (elem.innerHTML))
   {
     if (elementStyle.visibility === 'hidden') { return false; }
@@ -1289,7 +1290,7 @@ function isElementVisible (elem)
   }
 }
 
-/** 
+/**
  *  Remove all element children
  *
  *  @memberOf vs.util
@@ -1299,7 +1300,7 @@ function isElementVisible (elem)
 function removeAllElementChild (elem)
 {
   if (!elem || !elem.childNodes) { return; }
-  
+
   var l = elem.childNodes.length;
   while (l--)
   {
@@ -1307,7 +1308,7 @@ function removeAllElementChild (elem)
   }
 };
 
-/** 
+/**
  *  Set inner content of a element
  *
  *  @memberOf vs.util
@@ -1318,9 +1319,9 @@ function removeAllElementChild (elem)
 function setElementInnerText (elem, text)
 {
   if (!elem) { return; }
-  
+
   removeAllElementChild (elem); //... deroule
-  
+
   if (!util.isString (text))
   {
     if (text === undefined) { text = ""; }
@@ -1340,7 +1341,7 @@ function setElementInnerText (elem, text)
   }
 };
 
-/** 
+/**
  * @param {Element} elem The element
  * @param {String} txt The text
  **/
@@ -1348,10 +1349,10 @@ function safeInnerHTML (elem, text)
 {
   if (!elem) { return; }
   var data;
-  
+
   if (window.toStaticHTML) data = window.toStaticHTML (text);
   else data = text;
-  
+
   elem.innerHTML = data;
 };
 
@@ -1406,7 +1407,7 @@ function getElementMozTransform (elem, transform)
   if (elem) return window.getComputedStyle (elem).MozTransform;
 }
 
-/** 
+/**
  *  Set the CSS transformation to a element
  *
  *  @memberOf vs.util
@@ -1416,7 +1417,7 @@ function getElementMozTransform (elem, transform)
  **/
 var setElementTransform;
 
-/** 
+/**
  *  get the CSS transformation to a element
  *
  *  @memberOf vs.util
@@ -1430,7 +1431,7 @@ if (vsTestStyle && vsTestStyle.webkitTransform !== undefined)
 {
   setElementTransform = setElementWebkitTransform;
   getElementTransform = getElementWebkitTransform;
-}  
+}
 else if (vsTestStyle && vsTestStyle.msTransform !== undefined)
 {
   setElementTransform = setElementMSTransform;
@@ -1442,7 +1443,7 @@ else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
   getElementTransform = getElementMozTransform;
 }
 
-/** 
+/**
  *  Set the CSS transformation to a element
  *
  *  @memberOf vs.util
@@ -1453,7 +1454,7 @@ else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
  **/
 function setElementTransformOrigin (elem, value)
 {
-  if (elem && elem.style) 
+  if (elem && elem.style)
   {
     elem.style ['-' + vs.CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
   }
@@ -1465,7 +1466,7 @@ function setElementTransformOrigin (elem, value)
 *********************************************************************/
 
 /**
- * Removes the elements in the specified interval of this Array.<br/> 
+ * Removes the elements in the specified interval of this Array.<br/>
  * Shifts any subsequent elements to the left (subtracts one from their indices).<br/>
  * This method extends the JavaScript Array prototype.
  * By John Resig (MIT Licensed)
@@ -1503,17 +1504,17 @@ var _findItem = function (obj, from)
  *  Find an element into this Array.
  *
  * @param {Object} obj Element to locate in the array
- * @param {number} fromIndex The index at which to begin the search. 
+ * @param {number} fromIndex The index at which to begin the search.
  *    Defaults to 0, i.e. the whole array will be searched.
- *    If the index is greater than or equal to the length of the 
+ *    If the index is greater than or equal to the length of the
  *    array, -1 is returned
  * @return {int} the Index of the element. Return -1 if unfound.
  */
-Array.prototype.findItem = Array.prototype.indexOf? 
+Array.prototype.findItem = Array.prototype.indexOf?
 Array.prototype.indexOf:_findItem;
 
 /**
- * Removes the elements in the specified interval of this Array.<br/> 
+ * Removes the elements in the specified interval of this Array.<br/>
  * Shifts any subsequent elements to the left (subtracts one from their indices).<br/>
  * This method extends the JavaScript Array prototype.
  *
@@ -1537,7 +1538,7 @@ Array.prototype.remove = function (from, to)
 };
 
 /**
- * Removes all elements of this Array.<br/> 
+ * Removes all elements of this Array.<br/>
  *
  * @return {Array} the modified array
  */
@@ -1548,7 +1549,7 @@ Array.prototype.removeAll = function ()
 };
 
 /**
- * Return a copy of the array 
+ * Return a copy of the array
  *
  * @return {Array} the modified array
  */
@@ -1574,9 +1575,9 @@ Array.prototype.clone = function ()
 function importFile (path, doc, clb, type)
 {
   if (!doc) { doc = document; }
-  
+
   var js_effets, css_style;
-  
+
   if (type === 'js' || path.search ('\\.js') >= 0)
   {
     js_effets = doc.createElement ("script");
@@ -1602,7 +1603,7 @@ function importFile (path, doc, clb, type)
     if (util.isFunction (clb))
     {
       var count = 0;
-      
+
       /**
        * @private
        */
@@ -1659,7 +1660,7 @@ function importFile (path, doc, clb, type)
 function addCssRules (selector, rules)
 {
   if (!isArray (rules)) { return; }
-  
+
   var i = rules.length;
   while (i--)
   {
@@ -1687,18 +1688,18 @@ var __app_style_sheet__ = null;
  */
 function addCssRule (selector, rule)
 {
-  if (!__app_style_sheet__) 
+  if (!__app_style_sheet__)
   {
     var style = document.createElement ('style');
     /* For Safari */
     style.appendChild (document.createTextNode (''));
     head = document.getElementsByTagName ('head')[0];
     head.appendChild (style);
-    
+
     __app_style_sheet__ =
       document.styleSheets[document.styleSheets.length - 1];
   }
-  
+
   var l = 0;
   if (__app_style_sheet__.cssRules)
   {
@@ -1707,11 +1708,11 @@ function addCssRule (selector, rule)
   {
     l = __app_style_sheet__.rules.length;
   }
-  
+
   if (__app_style_sheet__.insertRule)
   {
     __app_style_sheet__.insertRule (selector + ' {' + rule + '}', l);
-  } else if (__app_style_sheet__.addRule) 
+  } else if (__app_style_sheet__.addRule)
   {
     __app_style_sheet__.addRule (selector, rule, l);
   }
@@ -1729,7 +1730,7 @@ var SET_STYLE_OPTIMIZATION = true;
 var _current_platform_id = 0;
 vs._current_platform_id = _current_platform_id;
 
-/** 
+/**
  *  Sets the active stylesheet for the HTML document according to the specified
  *  title.
  *
@@ -1741,10 +1742,10 @@ var setActiveStyleSheet = function (title)
 {
   var i = 0, stylesheets = document.getElementsByTagName ("link"),
     stylesheet, info, id, app, size;
-    
+
   vs._current_platform_id = title;
   var apps = vs.Application_applications;
-  
+
   if (SET_STYLE_OPTIMIZATION)
   {
     if (apps) for (id in apps)
@@ -1765,12 +1766,12 @@ var setActiveStyleSheet = function (title)
     if (stylesheet.getAttribute ("title") !== title)
     {
       stylesheet.setAttribute ("disabled", true);
-    } else 
+    } else
     {
       stylesheet.removeAttribute ("disabled");
     }
   }
-  
+
   if (SET_STYLE_OPTIMIZATION)
   {
     if (apps) for (id in apps)
@@ -1786,7 +1787,7 @@ var setActiveStyleSheet = function (title)
 //     info = window.deviceConfiguration.targets [title];
 //     if (!info)
 //     { return; }
-//     
+//
 //     if (info.orientations [0] === 0 || info.orientations [0] === 180)
 //     {
 //       size = info.resolution.slice ();
@@ -1799,7 +1800,7 @@ var setActiveStyleSheet = function (title)
 //     }
 //     else
 //     { return; }
-//     
+//
 //     if (info.statusBarHeight)
 //     {
 //       size [1] -= info.statusBarHeight;
@@ -1819,24 +1820,24 @@ var setActiveStyleSheet = function (title)
  *  When the developer uses createAndAddComponent method, the system will
  *  load the HTML GUI template associated to the component to create.
  *  This process can take times.<br>
- *  In order to minimize the latency, this class method allows to preload all 
+ *  In order to minimize the latency, this class method allows to preload all
  *  data related to a component.<br>
  *  This method should ne call when the application start.
- * 
+ *
  *  @example
  *  vs.util.preloadTemplate ('GUICompOne');
  *  vs.util.preloadTemplate ('GUICompTwo');
  *  ...
  *  myObject.createAndAddComponent ('GUICompOne', conf, 'children');
- * 
+ *
  *  @memberOf vs.util
  *
- * @param {String} comp_name The GUI component name   
+ * @param {String} comp_name The GUI component name
  */
 function preloadTemplate (comp_name)
 {
   var path = comp_name + '.xhtml', xmlRequest;
-  
+
   if (vs.ui && vs.ui.View && vs.ui.View.__comp_templates [path]) { return; }
 
   xmlRequest = new XMLHttpRequest ();
@@ -1873,7 +1874,7 @@ function preloadTemplate (comp_name)
 util.extend (util, {
   vsTestElem:              vsTestElem,
   vsTestStyle:             vsTestStyle,
-  
+
   // Class functions
   extendClass:             extendClass,
   defineProperty:
@@ -1883,7 +1884,7 @@ util.extend (util, {
   clone:                   clone,
   free:                    free,
 
-  // JSON functions  
+  // JSON functions
   toJSON:                  toJSON,
 
   // testing functions
@@ -1928,11 +1929,11 @@ util.extend (util, {
   setElementTransform:        setElementTransform,
   getElementTransform:        getElementTransform,
   setElementTransformOrigin:  setElementTransformOrigin,
-  getBoundingClientRect:      
+  getBoundingClientRect:
     (vsTestElem && vsTestElem.getBoundingClientRect)?
     _getBoundingClientRect_api2:_getBoundingClientRect_api1,
   safeInnerHTML:              safeInnerHTML,
-  
+
   // other
   importFile:           importFile,
   setActiveStyleSheet:  setActiveStyleSheet,
