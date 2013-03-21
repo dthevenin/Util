@@ -1,6 +1,5 @@
 <html>
 <head>
-  <script type="text/javascript" src="../../tools/ext/jsunit/app/jsUnitCore.js"></script>
 </head>
 
 <body onload="runTest ()">
@@ -14,7 +13,7 @@
   {
     var isArray1 = Array.isArray ||
       function (object) { return _toString.call (object) === ARRAY_CLASS;};
-         
+
     function isArray2 (object)
     {
       if (typeof Array.isArray == 'function')
@@ -37,7 +36,7 @@
       r = isArray1 ([]);
     }
     console.log ('t1: ' + (new Date ().getTime () - t));
-    
+
     t = new Date ().getTime ();
     for (var i = 0; i < nb; i++)
     {
@@ -50,11 +49,11 @@
       r = isArray2 ([]);
     }
     console.log ('t2: ' + (new Date ().getTime () - t));
-    
+
     t = new Date ().getTime ();
     for (var i = 0; i < nb; i++)
     {
-      var r = isArray2 ('10');
+      var r = Array.isArray ('10');
       r = Array.isArray (10);
       r = Array.isArray (10.4);
       r = Array.isArray (undefined);
@@ -64,17 +63,21 @@
     }
     console.log ('t3: ' + (new Date ().getTime () - t));
   }
-  
+
   function testIsNumber ()
   {
     function isNumber1 (o) {
       return _toString.call (o) === NUMBER_CLASS;
     }
-    
+
     function isNumber2 (o) {
-      return typeof o === 'number' && isFinite(o);
+      return o instanceof Number || (typeof o === 'number' && isFinite(o));
     }
-    
+
+    function isNumber3 (o) {
+      return (typeof o === 'number' && isFinite(o)) || o instanceof Number;
+    }
+
     console.log ('Algo1 -> \'10\': ' + isNumber1 ('10'));
     console.log ('Algo1 -> 10: ' + isNumber1 (10));
     console.log ('Algo1 -> 10.4: ' + isNumber1 (10.4));
@@ -82,7 +85,7 @@
     console.log ('Algo1 -> null: ' + isNumber1 (null));
     console.log ('Algo1 -> {}: ' + isNumber1 ({}));
     console.log ('Algo1 -> []: ' + isNumber1 ([]));
-    
+
     console.log ('Algo2 -> \'10\': ' + isNumber2 ('10'));
     console.log ('Algo2 -> 10: ' + isNumber2 (10));
     console.log ('Algo2 -> 10.4: ' + isNumber2 (10.4));
@@ -90,7 +93,7 @@
     console.log ('Algo2 -> null: ' + isNumber2 (null));
     console.log ('Algo2 -> {}: ' + isNumber2 ({}));
     console.log ('Algo2 -> []: ' + isNumber2 ([]));
-    
+
     var nb = 1000000;
     var t = new Date ().getTime ();
     for (var i = 0; i < nb; i++)
@@ -104,7 +107,7 @@
       r = isNumber1 ([]);
     }
     console.log ('t1: ' + (new Date ().getTime () - t));
-    
+
     t = new Date ().getTime ();
     for (var i = 0; i < nb; i++)
     {
@@ -117,7 +120,20 @@
       r = isNumber2 ([]);
     }
     console.log ('t2: ' + (new Date ().getTime () - t));
-    
+
+    t = new Date ().getTime ();
+    for (var i = 0; i < nb; i++)
+    {
+      var r = isNumber3 ('10');
+      r = isNumber3 (10);
+      r = isNumber3 (10.4);
+      r = isNumber3 (undefined);
+      r = isNumber3 (null);
+      r = isNumber3 ({});
+      r = isNumber3 ([]);
+    }
+    console.log ('t3: ' + (new Date ().getTime () - t));
+
   }
   function runTest ()
   {
