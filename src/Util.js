@@ -1571,6 +1571,8 @@ Array.prototype.clone = function ()
  * @param {Document} doc The document into import the file
  * @param {Function} clb A function which will be called when the file is loaded
  * @param {String} type The file type ['js', 'css']
+ *
+ * @return {Script|Link} Returns a script or link element add to the document
  */
 function importFile (path, doc, clb, type)
 {
@@ -1592,6 +1594,8 @@ function importFile (path, doc, clb, type)
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
     doc.head.appendChild (js_effets);
+
+    return js_effets;
   }
   else if (type === 'css' || path.search('\\.css') >= 0)
   {
@@ -1634,6 +1638,8 @@ function importFile (path, doc, clb, type)
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
     doc.head.appendChild (css_style);
+
+    return css_style;
   }
 }
 
