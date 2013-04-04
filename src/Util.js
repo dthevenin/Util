@@ -1309,7 +1309,31 @@ function removeAllElementChild (elem)
 };
 
 /**
- *  Set inner content of a element
+ *  Safe set inner HTML of a element
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Element} elem The element
+ * @param {String} txt The text
+ **/
+function safeInnerHTML (elem, html_text)
+{
+  if (!elem || !isString (html_text)) { return; }
+
+  // MS Window 8 management
+  if (window.MSApp && window.MSApp.execUnsafeLocalFunction)
+    window.MSApp.execUnsafeLocalFunction (function() {
+      elem.innerHTML = html_text;
+    });
+  else
+  {
+    if (window.toStaticHTML) html_text = window.toStaticHTML (html_text);
+    elem.innerHTML = html_text;
+  }
+};
+
+/**
+ *  Set inner Text content of a element
  *
  *  @memberOf vs.util
  *
@@ -1339,21 +1363,6 @@ function setElementInnerText (elem, text)
     elem.appendChild (document.createElement ('br'));
     elem.appendChild (document.createTextNode (lines [i]));
   }
-};
-
-/**
- * @param {Element} elem The element
- * @param {String} txt The text
- **/
-function safeInnerHTML (elem, text)
-{
-  if (!elem) { return; }
-  var data;
-
-  if (window.toStaticHTML) data = window.toStaticHTML (text);
-  else data = text;
-
-  elem.innerHTML = data;
 };
 
 /**
@@ -1931,6 +1940,7 @@ util.extend (util, {
   setElementVisibility:       setElementVisibility,
   isElementVisible:           isElementVisible,
   removeAllElementChild:      removeAllElementChild,
+  safeInnerHTML:              safeInnerHTML,
   setElementInnerText:        setElementInnerText,
   setElementTransform:        setElementTransform,
   getElementTransform:        getElementTransform,
@@ -1938,7 +1948,6 @@ util.extend (util, {
   getBoundingClientRect:
     (vsTestElem && vsTestElem.getBoundingClientRect)?
     _getBoundingClientRect_api2:_getBoundingClientRect_api1,
-  safeInnerHTML:              safeInnerHTML,
 
   // other
   importFile:           importFile,
