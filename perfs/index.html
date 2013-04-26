@@ -24,7 +24,7 @@
     };
 
     var nb = 1000000;
-    var t = new Date ().getTime ();
+    var t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = isArray1 ('10');
@@ -35,9 +35,9 @@
       r = isArray1 ({});
       r = isArray1 ([]);
     }
-    console.log ('t1: ' + (new Date ().getTime () - t));
+    console.log ('t1: ' + (Date.now () - t));
 
-    t = new Date ().getTime ();
+    t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = isArray2 ('10');
@@ -48,9 +48,9 @@
       r = isArray2 ({});
       r = isArray2 ([]);
     }
-    console.log ('t2: ' + (new Date ().getTime () - t));
+    console.log ('t2: ' + (Date.now () - t));
 
-    t = new Date ().getTime ();
+    t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = Array.isArray ('10');
@@ -61,7 +61,7 @@
       r = Array.isArray ({});
       r = Array.isArray ([]);
     }
-    console.log ('t3: ' + (new Date ().getTime () - t));
+    console.log ('t3: ' + (Date.now () - t));
   }
 
   function testIsNumber ()
@@ -95,7 +95,7 @@
     console.log ('Algo2 -> []: ' + isNumber2 ([]));
 
     var nb = 1000000;
-    var t = new Date ().getTime ();
+    var t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = isNumber1 ('10');
@@ -106,9 +106,9 @@
       r = isNumber1 ({});
       r = isNumber1 ([]);
     }
-    console.log ('t1: ' + (new Date ().getTime () - t));
+    console.log ('t1: ' + (Date.now () - t));
 
-    t = new Date ().getTime ();
+    t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = isNumber2 ('10');
@@ -119,9 +119,9 @@
       r = isNumber2 ({});
       r = isNumber2 ([]);
     }
-    console.log ('t2: ' + (new Date ().getTime () - t));
+    console.log ('t2: ' + (Date.now () - t));
 
-    t = new Date ().getTime ();
+    t = Date.now ();
     for (var i = 0; i < nb; i++)
     {
       var r = isNumber3 ('10');
@@ -132,7 +132,7 @@
       r = isNumber3 ({});
       r = isNumber3 ([]);
     }
-    console.log ('t3: ' + (new Date ().getTime () - t));
+    console.log ('t3: ' + (Date.now () - t));
 
   }
   function runTest ()
