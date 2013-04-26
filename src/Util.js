@@ -548,7 +548,7 @@ function clone (object)
       {
         destination[property] = clone (object [property]);
       }
-      return destination; break;
+      return destination;
 
     case ARRAY_CLASS:
       destination = [];
@@ -556,7 +556,7 @@ function clone (object)
       {
         destination [i] = clone (object [i]);
       }
-      return destination; break;
+      return destination;
 
     case BOOLEAN_TYPE:
     case NUMBER_TYPE:
@@ -565,7 +565,7 @@ function clone (object)
     case NUMBER_CLASS:
     case STRING_CLASS:
     default:
-      return object; break;
+      return object;
   }
 };
 
