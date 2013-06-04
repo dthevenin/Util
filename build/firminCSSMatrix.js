@@ -29,7 +29,7 @@
  *    in the form given by the CSS transform property, i.e. just like the
  *    output from [[FirminCSSMatrix#toString]].
  **/
-FirminCSSMatrix = function(domstr) {
+var FirminCSSMatrix = function(domstr) {
   this.m11 = this.m22 = this.m33 = this.m44 = 1;
 
          this.m12 = this.m13 = this.m14 =
