@@ -224,10 +224,10 @@ var extendClass = function (obj, extension)
       util.extend (obj.prototype, proto);
     }
 
-    if (!obj._properties_) obj._properties_ = [];
-    if (extension._properties_)
+    if (!obj.__properties__) obj.__properties__ = [];
+    if (extension.__properties__)
     {
-      obj._properties_ = obj._properties_.concat (extension._properties_);
+      obj.__properties__ = obj.__properties__.concat (extension.__properties__);
     }
 
     return obj;
@@ -408,12 +408,12 @@ function _defineProperty_api2 (obj, prop_name, desc)
 function defineClassProperty (the_class, prop_name, desc)
 {
   if (!desc) { return; }
-  if (!the_class._properties_) the_class._properties_ = [];
+  if (!the_class.__properties__) the_class.__properties__ = [];
   if (!the_class.prototype) {
     throw ("defineClassProperty on a Class without prototype");
   }
   util.defineProperty (the_class.prototype, prop_name, desc);
-  if (desc.enumerable != false) the_class._properties_.push (prop_name);
+  if (desc.enumerable != false) the_class.__properties__.push (prop_name);
 }
 
 /**
