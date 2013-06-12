@@ -37,30 +37,30 @@ function testElementStyle()
   var node = document.createElement ('div');
   document.body.appendChild (node);
   
-  assertEquals ("ElementStyle setStyle", "", node.style.cssText);
+  assertEquals ("ElementStyle setStyle 1", "", node.style.cssText);
   vs.util.setElementStyle (node, {color: 'black'});
-  assertEquals ("ElementStyle setStyle", "color: black; ", node.style.cssText);
+  assertEquals ("ElementStyle setStyle 2", "color: black;", node.style.cssText);
   vs.util.setElementStyle (node, {color: 'red', opacity: '0.5', display: "block"});
-  assertEquals ("ElementStyle setStyle", "color: red; opacity: 0.5; display: block; ", node.style.cssText);
+  assertEquals ("ElementStyle setStyle 3", "color: red; opacity: 0.5; display: block;", node.style.cssText);
   vs.util.setElementStyle (node, {display: undefined});
-  assertEquals ("ElementStyle setStyle", "color: red; opacity: 0.5; ", node.style.cssText);
+  assertEquals ("ElementStyle setStyle 4", "color: red; opacity: 0.5;", node.style.cssText);
   vs.util.setElementStyle (node, {color: undefined, opacity: undefined});
-  assertEquals ("ElementStyle setStyle", "", node.style.cssText);
+  assertEquals ("ElementStyle setStyle 5", "", node.style.cssText);
   
   node.style.color = 'black';
   node.style.display = 'block';
   node.style.opacity = 1;
   vs.util.setElementOpacity (node, '1');
 
-  assertEquals ("ElementOpacity set1", '1', node.style.opacity);
+  assertEquals ("ElementOpacity set 1", '1', node.style.opacity);
   vs.util.setElementOpacity (node, 0.1);
-  assertEquals ("ElementOpacity set2", '0.1', node.style.opacity);
+  assertEquals ("ElementOpacity set 2", '0.1', node.style.opacity);
   vs.util.setElementOpacity (node, 0);
-  assertEquals ("ElementOpacity set3", '0', node.style.opacity);
+  assertEquals ("ElementOpacity set 3", '0', node.style.opacity);
 
-  assertEquals ("ElementOpacity get1", 0, vs.util.getElementOpacity (node));
+  assertEquals ("ElementOpacity get 1", 0, vs.util.getElementOpacity (node));
   vs.util.setElementOpacity (node, 0.6);
-  assertEquals ("ElementOpacity get2", 0.6, vs.util.getElementOpacity (node)); 
+  assertEquals ("ElementOpacity get 2", 0.6, vs.util.getElementOpacity (node)); 
 }
 
 function testElementDimensions ()
