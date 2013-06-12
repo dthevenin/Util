@@ -1406,7 +1406,7 @@ function setElementWebkitTransform (elem, transform)
  */
 function getElementWebkitTransform (elem, transform)
 {
-  if (elem) return window.getComputedStyle (elem).webkitTransform;
+  if (elem) return elem.style.webkitTransform;
 }
 
 /**
@@ -1423,7 +1423,7 @@ function setElementMSTransform (elem, transform)
  */
 function getElementMSTransform (elem, transform)
 {
-  if (elem) return window.getComputedStyle (elem).msTransform;
+  if (elem) return elem.style.msTransform;
 }
 
 /**
@@ -1440,7 +1440,7 @@ function setElementMozTransform (elem, transform)
  */
 function getElementMozTransform (elem, transform)
 {
-  if (elem) return window.getComputedStyle (elem).MozTransform;
+  if (elem) return elem.style.MozTransform;
 }
 
 /**
