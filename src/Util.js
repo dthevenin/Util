@@ -460,13 +460,9 @@ function defineClassProperties (the_class, properties)
     throw ("defineClassProperties on a Class without prototype");
   }
 
-  properties = Object (properties);
-  var keys = _keys (properties);
-  for (var i = 0; i < keys.length; i++)
+  for (var prop_name in properties)
   {
-    var prop_name = keys[i]
-    var desc = properties[keys[i]];
-    defineClassProperty (the_class, prop_name, desc);
+    defineClassProperty (the_class, prop_name, properties[prop_name]);
   }
 }
 
