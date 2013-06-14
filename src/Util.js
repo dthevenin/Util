@@ -373,6 +373,7 @@ function _defineProperty_api2 (obj, prop_name, desc)
     var s = desc.set;
     if (isFunction (s)) d.set = s;
   }
+  d.__prop_name = desc.__prop_name;
 
   if (("get" in d || "set" in d) && ("value" in d || "writable" in d))
     throw new TypeError("identity-confused descriptor");
