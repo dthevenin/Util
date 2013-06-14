@@ -135,10 +135,41 @@
     console.log ('t3: ' + (Date.now () - t));
 
   }
+
+
+  function testObjectKeysVSin ()
+  {
+
+    var t = Date.now (), nb = 1000, obj = window, index = 0;
+    for (var k = 0; k < nb; k++)
+    {
+      var keys = Object.keys (obj), l = keys.length, i = 0, key, value;
+      for (; i < l; i++) {
+        key = keys[i];
+        value = obj[key];
+        index++;
+      }
+    }
+    console.log ('t1: ' + (Date.now () - t));
+
+    t = Date.now ();
+    for (var k = 0; k < nb; k++)
+    {
+      var key, value;
+      for (key in obj) {
+        value = obj [key];
+        index++;
+      }
+    }
+    console.log ('t2: ' + (Date.now () - t));
+    console.log (index);
+
+  }
   function runTest ()
   {
     testIsArray ();
-    testIsNumber ()
+    testIsNumber ();
+    testObjectKeysVSin ();
   }
 </script>
 </body>
