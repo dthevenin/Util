@@ -373,7 +373,6 @@ function _defineProperty_api2 (obj, prop_name, desc)
     var s = desc.set;
     if (isFunction (s)) d.set = s;
   }
-  d.__prop_name = desc.__prop_name;
 
   if (("get" in d || "set" in d) && ("value" in d || "writable" in d))
     throw new TypeError("identity-confused descriptor");
@@ -448,9 +447,12 @@ function defineClassProperties (the_class, properties)
     throw ("defineClassProperties on a Class without prototype");
   }
 
-  for (var prop_name in properties)
+  var keys = Object.keys (properties), i = 0, l = keys.length, prop_name, desc;
+  for (; i < l; i++)
   {
-    defineClassProperty (the_class, prop_name, properties[prop_name]);
+    prop_name = keys [i]
+    desc = properties [prop_name];
+    defineClassProperty (the_class, prop_name, desc);
   }
 }
 
