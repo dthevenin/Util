@@ -431,19 +431,6 @@ function defineClassProperty (the_class, prop_name, desc)
 }
 
 /**
- * @private
- */
-var _keys = (typeof Object.keys === 'function')?Object.keys: function (o)
-{
-  var array = new Array (), key;
-  for (key in o)
-  {
-    if (Object.prototype.hasOwnProperty.call (o, key)) { array.push (key); }
-  }
-  return array;
-};
-
-/**
  * Defines new or modifies existing properties directly on an 'class'.<br/><br/>
  *
  * @see vs.util.defineClassProperty
