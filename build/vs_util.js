@@ -463,6 +463,7 @@ function _defineProperty_api2 (obj, prop_name, desc)
     var s = desc.set;
     if (isFunction (s)) d.set = s;
   }
+  d.__prop_name = desc.__prop_name;
 
   if (("get" in d || "set" in d) && ("value" in d || "writable" in d))
     throw new TypeError("identity-confused descriptor");
@@ -521,19 +522,6 @@ function defineClassProperty (the_class, prop_name, desc)
 }
 
 /**
- * @private
- */
-var _keys = (typeof Object.keys === 'function')?Object.keys: function (o)
-{
-  var array = new Array (), key;
-  for (key in o)
-  {
-    if (Object.prototype.hasOwnProperty.call (o, key)) { array.push (key); }
-  }
-  return array;
-};
-
-/**
  * Defines new or modifies existing properties directly on an 'class'.<br/><br/>
  *
  * @see vs.util.defineClassProperty
@@ -550,13 +538,9 @@ function defineClassProperties (the_class, properties)
     throw ("defineClassProperties on a Class without prototype");
   }
 
-  properties = Object (properties);
-  var keys = _keys (properties);
-  for (var i = 0; i < keys.length; i++)
+  for (var prop_name in properties)
   {
-    var prop_name = keys[i]
-    var desc = properties[keys[i]];
-    defineClassProperty (the_class, prop_name, desc);
+    defineClassProperty (the_class, prop_name, properties[prop_name]);
   }
 }
 
