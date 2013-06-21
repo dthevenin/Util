@@ -1681,7 +1681,7 @@ Array.prototype.removeAll = function ()
  */
 Array.prototype.clone = function ()
 {
-  return this.slice ();
+  return clone (this);
 };
 
 /********************************************************************
