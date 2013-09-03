@@ -85,6 +85,28 @@ if (!vs.CSSMatrix.prototype.isAffine) {
   }
 }
 
+var precision = 1000000;
+
+/**
+ *  vs.CSSMatrix#vs.getMatrixStr() -> String
+ *  return affine transformation matrix
+ * @public
+ * @function
+ *
+ *  Returns a string representation of the 3d matrix.
+ **/
+vs.CSSMatrix.prototype.getMatrixStr = function () {
+  var points = [
+    ~~(this.a * precision) / precision,
+    ~~(this.b * precision) / precision,
+    ~~(this.c * precision) / precision,
+    ~~(this.d * precision) / precision,
+    ~~(this.e * precision) / precision,
+    ~~(this.f * precision) / precision
+  ];
+  return "matrix(" + points.join(", ") + ")";
+}
+
 /**
  *  vs.CSSMatrix#vs.getMatrix3dStr() -> String
  * @public
@@ -92,7 +114,6 @@ if (!vs.CSSMatrix.prototype.isAffine) {
  *
  *  Returns a string representation of the 3d matrix.
  **/
-var precision = 1000000;
 vs.CSSMatrix.prototype.getMatrix3dStr = function () {
   var points = [
     ~~(this.m11 * precision) / precision,
@@ -145,6 +166,17 @@ var cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
   clearTimeout;
 
 vs.cancelRequestAnimationFrame = cancelRequestAnimationFrame.bind (window);
+
+var setImmediate =
+  window.setImmediate ||
+  function (func, args) { return this.setTimeout (func, 0, args); };
+
+vs.setImmediate = setImmediate.bind (window);
+  
+var clearImmediate =
+  window.clearImmediate || window.clearTimeout;
+  
+vs.clearImmediate = clearImmediate.bind (window);
 
 /********************************************************************
 
@@ -1610,7 +1642,7 @@ Array.prototype.clone = function ()
  *
  * @return {Script|Link} Returns a script or link element add to the document
  */
-function importFile (path, doc, clb, type)
+function importFile (path, doc, clb, type, first)
 {
   if (!doc) { doc = document; }
 
@@ -1629,7 +1661,12 @@ function importFile (path, doc, clb, type)
       };
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
-    doc.head.appendChild (js_effets);
+    
+    if (first && doc.head.firstElementChild) {
+      doc.head.insertBefore (js_effets, doc.head.firstElementChild);
+    }
+    else
+      doc.head.appendChild (js_effets);
 
     return js_effets;
   }
@@ -1673,7 +1710,12 @@ function importFile (path, doc, clb, type)
       })();
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
-    doc.head.appendChild (css_style);
+    
+    if (first && doc.head.firstElementChild) {
+      doc.head.insertBefore (css_style, doc.head.firstElementChild);
+    }
+    else
+      doc.head.appendChild (css_style);
 
     return css_style;
   }
