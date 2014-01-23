@@ -1386,7 +1386,8 @@ function safeInnerHTML (elem, html_text)
     });
   else
   {
-    if (window.toStaticHTML) html_text = window.toStaticHTML (html_text);
+    // deactivated because to restrictive
+    // if (window.toStaticHTML) html_text = window.toStaticHTML (html_text);
     elem.innerHTML = html_text;
   }
 };
