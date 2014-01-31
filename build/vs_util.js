@@ -1633,7 +1633,7 @@ else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
  * @return {vs.CSSMatrix} matrix3d css transformation
  **/
 function getElementMatrixTransform (elem) {
-  if (elem) return;
+  if (!elem) return;
 
   var
     css = document.defaultView.getComputedStyle (elem, null),
