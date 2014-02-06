@@ -75,6 +75,22 @@ function testIsNumber ()
   assertFalse ('ObjectIsNumber 12', vs.util.isNumber(document));
 }
 
+function testIsObject ()
+{
+  assertFalse ('ObjectIsObject 1', vs.util.isObject(0));
+  assertFalse ('ObjectIsObject 2', vs.util.isObject(1.0));
+  assertFalse ('ObjectIsObject 3', vs.util.isObject(new Number(0)));
+  assertFalse ('ObjectIsObject 4', vs.util.isObject(new Number(1.0)));
+  assertFalse ('ObjectIsObject 5', vs.util.isObject(function() { }));
+  assertTrue ('ObjectIsObject 6', vs.util.isObject({ test: function() { return 3 } }));
+  assertFalse ('ObjectIsObject 7', vs.util.isObject("a string"));
+  assertFalse ('ObjectIsObject 8', vs.util.isObject([]));
+  assertTrue ('ObjectIsObject 9', vs.util.isObject({}));
+  assertFalse ('ObjectIsObject 10', vs.util.isObject(false));
+  assertFalse ('ObjectIsObject 11', vs.util.isObject(undefined));
+  assertFalse ('ObjectIsObject 12', vs.util.isObject(document));
+}
+
 function testIsUndefined ()
 {
   assertTrue ('ObjectIsUndefined 1', vs.util.isUndefined(undefined));
