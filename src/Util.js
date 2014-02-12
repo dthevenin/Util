@@ -1232,28 +1232,38 @@ function getElementAbsolutePosition (element, force)
     var rec = element.getBoundingClientRect ();
     if (rec) { return new vs.Point (rec.left, rec.top); }
   }
-  var x = 0;
-  var y = 0;
-  var parent = element;
+  var
+    x = 0, y = 0;
+    parent = element,
+    borderXOffset = 0,
+    borderYOffset = 0;
+    
   while (parent)
   {
-     var borderXOffset = 0;
-     var borderYOffset = 0;
-     if (parent != element)
-     {
-        borderXOffset = parseInt (
-          parent.currentStyle?
-          parent.currentStyle ["borderLeftWidth"]:0, 0);
-        borderYOffset = parseInt (
-          parent.currentStyle?
-          parent.currentStyle ["borderTopWidth"]:0, 0);
-        borderXOffset = isNaN (borderXOffset) ? 0 : borderXOffset;
-        borderYOffset = isNaN (borderYOffset) ? 0 : borderYOffset;
-     }
+    borderXOffset = 0;
+    borderYOffset = 0;
+    if (parent != element)
+    {
+      borderXOffset = parseInt (
+        parent.currentStyle?
+        parent.currentStyle ["borderLeftWidth"]:0, 0);
+      borderYOffset = parseInt (
+        parent.currentStyle?
+        parent.currentStyle ["borderTopWidth"]:0, 0);
+      borderXOffset = isNaN (borderXOffset) ? 0 : borderXOffset;
+      borderYOffset = isNaN (borderYOffset) ? 0 : borderYOffset;
+    }
 
-     x += parent.offsetLeft - parent.scrollLeft + borderXOffset;
-     y += parent.offsetTop - parent.scrollTop + borderYOffset;
-     parent = parent.offsetParent;
+    if (parent instanceof HTMLBodyElement) {
+      x += parent.offsetLeft - document.documentElement.scrollLeft + borderXOffset;
+      y += parent.offsetTop - document.documentElement.scrollTop + borderYOffset;
+      parent = null;
+    }
+    else {
+      x += parent.offsetLeft - parent.scrollLeft + borderXOffset;
+      y += parent.offsetTop - parent.scrollTop + borderYOffset;
+      parent = parent.offsetParent;
+    }
   }
   return new vs.Point (x, y);
 }
