@@ -1717,9 +1717,9 @@ Array.prototype.removeAll = function ()
 Array.prototype.clone = function ()
 {
   var destination = [];
-  for (var i = 0; i < object.length; i++)
+  for (var i = 0; i < this.length; i++)
   {
-    destination [i] = clone (object [i]);
+    destination [i] = clone (this [i]);
   }
   return destination;
 };
