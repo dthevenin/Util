@@ -660,6 +660,8 @@ function clone (object)
     case null: return null;
     case undefined: return undefined;
   }
+  
+  if (object.clone) return object.clone ();
 
   switch (_toString.call (object))
   {
@@ -672,13 +674,8 @@ function clone (object)
       }
       return destination;
 
-    case ARRAY_CLASS:
-      destination = [];
-      for (var i = 0; i < object.length; i++)
-      {
-        destination [i] = clone (object [i]);
-      }
-      return destination;
+    case ARRAY_CLASS: // should not occur because of Array.clone
+    break;
 
     case BOOLEAN_TYPE:
     case NUMBER_TYPE:
@@ -1804,7 +1801,12 @@ Array.prototype.removeAll = function ()
  */
 Array.prototype.clone = function ()
 {
-  return clone (this);
+  var destination = [];
+  for (var i = 0; i < object.length; i++)
+  {
+    destination [i] = clone (object [i]);
+  }
+  return destination;
 };
 
 /********************************************************************
