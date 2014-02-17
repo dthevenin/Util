@@ -570,6 +570,8 @@ function clone (object)
     case null: return null;
     case undefined: return undefined;
   }
+  
+  if (object.clone) return object.clone ();
 
   switch (_toString.call (object))
   {
@@ -582,7 +584,7 @@ function clone (object)
       }
       return destination;
 
-    case ARRAY_CLASS:
+    case ARRAY_CLASS: // should not occur because of Array.clone
       destination = [];
       for (var i = 0; i < object.length; i++)
       {
@@ -1714,7 +1716,12 @@ Array.prototype.removeAll = function ()
  */
 Array.prototype.clone = function ()
 {
-  return clone (this);
+  var destination = [];
+  for (var i = 0; i < object.length; i++)
+  {
+    destination [i] = clone (object [i]);
+  }
+  return destination;
 };
 
 /********************************************************************
