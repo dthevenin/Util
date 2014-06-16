@@ -827,7 +827,7 @@ function addClassName ()
     for (; i < l; i++) {
       element.classList.add (arguments [i]);
     }
-    return;
+    return element;
   }
 
   for (; i < l; i++)
@@ -860,7 +860,7 @@ function removeClassName ()
     for (; i < l; i++) {
       element.classList.remove (arguments [i]);
     }
-    return;
+    return element;
   }
   
   for (; i < l; i++) {
@@ -885,6 +885,12 @@ function removeClassName ()
 function toggleClassName (element, className)
 {
   if (!element) { return; }
+
+  if (element.classList) {
+    element.classList.toggle (className);
+    return element;
+  }
+
   return hasClassName(element, className) ?
     removeClassName(element, className): addClassName(element, className);
 }
