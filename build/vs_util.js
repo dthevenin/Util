@@ -910,13 +910,20 @@ function hasClassName (element, className)
 */
 function addClassName ()
 {
-  var element = arguments [0], className, i = 1;
+  var element = arguments [0], className, i = 1, l = arguments.length;
   if (!element) { return; }
-  for (; i < arguments.length; i++)
+
+  if (element.classList) {
+    for (; i < l; i++) {
+      element.classList.add (arguments [i]);
+    }
+    return element;
+  }
+
+  for (; i < l; i++)
   {
     className = arguments [i];
-    if (!hasClassName(element, className))
-    {
+    if (!hasClassName(element, className)) {
       element.className = (element.className ? element.className + ' ' : '') + className;
     }
   }
@@ -936,10 +943,17 @@ function addClassName ()
 */
 function removeClassName ()
 {
-  var element = arguments [0], className, i = 1;
+  var element = arguments [0], className, i = 1, l = arguments.length;
   if (!element || !element.className) { return; }
-  for (; i < arguments.length; i++)
-  {
+  
+  if (element.classList) {
+    for (; i < l; i++) {
+      element.classList.remove (arguments [i]);
+    }
+    return element;
+  }
+  
+  for (; i < l; i++) {
     className = arguments [i];
     element.className = strip (element.className.replace (
       new RegExp("(^|\\s+)" + className + "(\\s+|$)"), ' '));
@@ -961,6 +975,12 @@ function removeClassName ()
 function toggleClassName (element, className)
 {
   if (!element) { return; }
+
+  if (element.classList) {
+    element.classList.toggle (className);
+    return element;
+  }
+
   return hasClassName(element, className) ?
     removeClassName(element, className): addClassName(element, className);
 }
