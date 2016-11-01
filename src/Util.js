@@ -20,6 +20,8 @@
 
 *********************************************************************/
 
+var Point = require("./Point")
+
 var document = (typeof window != "undefined")?window.document:null;
 
 /**
@@ -31,37 +33,7 @@ var vsTestElem = (document)?document.createElement ('vstestelem'):null;
 /**
  * @private
  */
-var vsTestStyle = (vsTestElem)?vsTestElem.style:null;
 var __date_reg_exp = /\/Date\((-?\d+)\)\//;
-
-if (vsTestStyle)
-{
-  if (vsTestStyle.webkitTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM =
-      'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix ();
-
-  else if (vsTestStyle.MozTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
-
-  else if (vsTestStyle.msTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM =
-     'MSCSSMatrix' in window && 'm11' in new MSCSSMatrix ();
-
-  vs.CSS_VENDOR = (function () {
-    var vendors = ['MozT', 'msT', 'OT', 'webkitT', 't'],
-      transform,
-      l = vendors.length;
-
-    while (--l) {
-      transform = vendors[l] + 'ransform';
-      if ( transform in vsTestStyle ) return vendors[l].substr(0, vendors[l].length-1);
-    }
-
-    return null;
-  })();
-}
-
-vs.SUPPORT_CSS_TRANSFORM = (vs.CSS_VENDOR !== null) ? true : false;
 
 /**
  * Represents a 4×4 homogeneous matrix that enables Document Object Model (DOM)
@@ -70,16 +42,16 @@ vs.SUPPORT_CSS_TRANSFORM = (vs.CSS_VENDOR !== null) ? true : false;
  * @public
  * @memberOf vs
  */
-vs.CSSMatrix = ('WebKitCSSMatrix' in window)?window.WebKitCSSMatrix:
+var CSSMatrix = ('WebKitCSSMatrix' in window)?window.WebKitCSSMatrix:
   ('MSCSSMatrix' in window)?window.MSCSSMatrix:FirminCSSMatrix;
 
 /**
- *  vs.CSSMatrix#isAffine() -> Boolean
+ *  CSSMatrix#isAffine() -> Boolean
  *
  *  Determines whether the matrix is affine.
  **/
-if (!vs.CSSMatrix.prototype.isAffine) {
-  vs.CSSMatrix.prototype.isAffine = function () {
+if (!CSSMatrix.prototype.isAffine) {
+  CSSMatrix.prototype.isAffine = function () {
     return !(this.m13 || this.m14 || this.m23 || this.m24 || this.m31 ||
       this.m32 ||this.m33 !== 1 && this.m34 || this.m43 || this.m44 !== 1);
   }
@@ -88,14 +60,14 @@ if (!vs.CSSMatrix.prototype.isAffine) {
 var precision = 1000;
 
 /**
- *  vs.CSSMatrix#vs.getMatrixStr() -> String
+ *  CSSMatrix#vs.getMatrixStr() -> String
  *  return affine transformation matrix
  * @public
  * @function
  *
  *  Returns a string representation of the 3d matrix.
  **/
-vs.CSSMatrix.prototype.getMatrixStr = function () {
+CSSMatrix.prototype.getMatrixStr = function () {
   var points = [
     ~~(this.a * precision) / precision,
     ~~(this.b * precision) / precision,
@@ -108,13 +80,13 @@ vs.CSSMatrix.prototype.getMatrixStr = function () {
 }
 
 /**
- *  vs.CSSMatrix#vs.getMatrix3dStr() -> String
+ *  CSSMatrix#vs.getMatrix3dStr() -> String
  * @public
  * @function
  *
  *  Returns a string representation of the 3d matrix.
  **/
-vs.CSSMatrix.prototype.getMatrix3dStr = function () {
+CSSMatrix.prototype.getMatrix3dStr = function () {
   var points = [
     ~~(this.m11 * precision) / precision,
     ~~(this.m12 * precision) / precision,
@@ -135,48 +107,6 @@ vs.CSSMatrix.prototype.getMatrix3dStr = function () {
   ];
   return "matrix3d(" + points.join(", ") + ")";
 }
-/**
- * Tells the browser that you wish to perform an animation and requests
- * that the browser schedule a repaint of the window for the next animation
- * frame. The method takes as an argument a callback to be invoked before
- * the repaint.
- *
- * @public
- * @function
- * @memberOf vs
- *
- * @param {Function} callback A parameter specifying a function to call
- *        when it's time to update your animation for the next repaint.
- */
-var requestAnimationFrame =
-  window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.oRequestAnimationFrame ||
-  window.msRequestAnimationFrame ||
-  function (callback) { window.setTimeout (callback, 1000 / 60); };
-
-vs.requestAnimationFrame = requestAnimationFrame.bind (window);
-
-var cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
-  window.webkitCancelAnimationFrame ||
-  window.mozCancelAnimationFrame ||
-  window.oCancelAnimationFrame ||
-  window.msCancelAnimationFrame ||
-  clearTimeout;
-
-vs.cancelRequestAnimationFrame = cancelRequestAnimationFrame.bind (window);
-
-var setImmediate =
-  window.setImmediate ||
-  function (func, args) { return this.setTimeout (func, 0, args); };
-
-vs.setImmediate = setImmediate.bind (window);
-  
-var clearImmediate =
-  window.clearImmediate || window.clearTimeout;
-  
-vs.clearImmediate = clearImmediate.bind (window);
 
 /********************************************************************
 
@@ -187,23 +117,18 @@ vs.clearImmediate = clearImmediate.bind (window);
  *
  * @private
  */
-function _extend_api1 (destination, source)
-{
-  for (var property in source)
-  {
+function _extend_api1 (destination, source) {
+  for (var property in source) {
     getter = source.__lookupGetter__ (property);
     setter = source.__lookupSetter__ (property);
 
-    if (getter)
-    {
+    if (getter) {
       destination.__defineGetter__ (property, getter)
     }
-    if (setter)
-    {
+    if (setter) {
       destination.__defineSetter__ (property, setter)
     }
-    if (!getter && !setter)
-    {
+    if (!getter && !setter) {
       destination [property] = source [property];
     }
   }
@@ -215,33 +140,19 @@ function _extend_api1 (destination, source)
  *
  * @private
  */
-function _extend_api2 (destination, source)
-{
-  for (var property in source)
-  {
+function _extend_api2 (destination, source) {
+  for (var property in source) {
     var desc = Object.getOwnPropertyDescriptor (source, property);
 
-    if (desc && (desc.get || desc.set))
-    {
-      util.defineProperty (destination, property, desc);
+    if (desc && (desc.get || desc.set)) {
+      defineProperty (destination, property, desc);
     }
-    else
-    {
+    else {
       destination [property] = source [property];
     }
   }
   return destination;
 }
-
-/**
- * Copies all properties from the source to the destination object.
- *
- * @memberOf vs.util
- *
- * @param {Object} destination The object to receive the new properties.
- * @param {Object} source The object whose properties will be duplicated.
- **/
-vs.util.extend = (Object.defineProperty)?_extend_api2:_extend_api1;
 
 /**
  * Extends a the prototype of a object
@@ -251,19 +162,15 @@ vs.util.extend = (Object.defineProperty)?_extend_api2:_extend_api1;
  * @param {Object} destination The Class to receive the new properties.
  * @param {Object} source The Class whose properties will be duplicated.
  **/
-var extendClass = function (obj, extension)
-{
-  if (!obj || !extension) { return; }
-  if (!obj.prototype || !extension.prototype) { return; }
+var extendClass = function (obj, extension) {
+  if (!obj || !extension) return
+  if (!obj.prototype || !extension.prototype) return
 
-  try
-  {
-    if (Object.__proto__)
-    {
+  try {
+    if (Object.__proto__) {
       obj.prototype.__proto__ = extension.prototype;
     }
-    else
-    {
+    else {
       var proto = obj.prototype;
       obj.prototype = new extension ();
 
@@ -271,15 +178,13 @@ var extendClass = function (obj, extension)
     }
 
     if (!obj.__properties__) obj.__properties__ = [];
-    if (extension.__properties__)
-    {
+    if (extension.__properties__) {
       obj.__properties__ = obj.__properties__.concat (extension.__properties__);
     }
 
     return obj;
   }
-  catch (e)
-  {
+  catch (e) {
     console.error (e.message ());
   }
 }
@@ -291,9 +196,8 @@ var extendClass = function (obj, extension)
  *
  * @param {Object} obj the object to free
  */
-function free (obj)
-{
-  if (!obj) { return; }
+function free (obj) {
+  if (!obj) return
   if (obj._free) { obj._free (); }
   if (obj.destructor) { obj.destructor (); }
   delete (obj);
@@ -345,21 +249,17 @@ function free (obj)
  *
  * @private
  */
-function _defineProperty_api1 (obj, prop_name, desc)
-{
-  function hasProperty (obj, prop)
-  {
+function _defineProperty_api1 (obj, prop_name, desc) {
+  function hasProperty (obj, prop) {
     return Object.prototype.hasOwnProperty.call (obj, prop);
   }
 
-  if (hasProperty (desc, "set"))
-  {
+  if (hasProperty (desc, "set")) {
     var s = desc.set;
     if (isFunction (s)) obj.__defineSetter__(prop_name, s);
   }
 
-  if (hasProperty (desc, "get"))
-  {
+  if (hasProperty (desc, "get")) {
     var s = desc.get;
     if (isFunction (s)) obj.__defineGetter__(prop_name, s);
   }
@@ -370,24 +270,20 @@ function _defineProperty_api1 (obj, prop_name, desc)
  *
  * @private
  */
-function _defineProperty_api2 (obj, prop_name, desc)
-{
-  function hasProperty (obj, prop)
-  {
+function _defineProperty_api2 (obj, prop_name, desc) {
+  function hasProperty (obj, prop) {
     return Object.prototype.hasOwnProperty.call (obj, prop);
   }
 
-  if (typeof desc != "object" || desc === null)
-  {
+  if (typeof desc != "object" || desc === null) {
     throw new TypeError ("bad desc");
   }
 
-  if (typeof prop_name != "string" || prop_name === null)
-  {
+  if (typeof prop_name != "string" || prop_name === null) {
     throw new TypeError ("bad property name");
   }
 
-  var d = {};
+  var d = {}
 
   if (hasProperty (desc, "enumerable")) d.enumerable = !!desc.enumerable;
   else d.enumerable = true;
@@ -395,13 +291,11 @@ function _defineProperty_api2 (obj, prop_name, desc)
   else d.configurable = true;
   if (hasProperty (desc, "value")) d.value = desc.value;
   if (hasProperty (desc, "writable")) d.writable = !!desc.writable;
-  if (hasProperty (desc, "get"))
-  {
+  if (hasProperty (desc, "get")) {
     var g = desc.get;
     if (isFunction (g)) d.get = g;
   }
-  if (hasProperty (desc, "set"))
-  {
+  if (hasProperty (desc, "set")) {
     var s = desc.set;
     if (isFunction (s)) d.set = s;
   }
@@ -451,14 +345,13 @@ function _defineProperty_api2 (obj, prop_name, desc)
  * @param {Object} desc The descriptor for the property being defined or
  * modified
  */
-function defineClassProperty (the_class, prop_name, desc)
-{
-  if (!desc) { return; }
+function defineClassProperty (the_class, prop_name, desc) {
+  if (!desc) return
   if (!the_class.__properties__) the_class.__properties__ = [];
   if (!the_class.prototype) {
     throw ("defineClassProperty on a Class without prototype");
   }
-  util.defineProperty (the_class.prototype, prop_name, desc);
+  defineProperty (the_class.prototype, prop_name, desc);
   if (desc.enumerable != false) the_class.__properties__.push (prop_name);
 }
 
@@ -473,15 +366,13 @@ function defineClassProperty (the_class, prop_name, desc)
  * @param {Object} properties An object whose own enumerable properties
  *   constitute descriptors for the properties to be defined or modified.
  */
-function defineClassProperties (the_class, properties)
-{
+function defineClassProperties (the_class, properties) {
   if (!the_class.prototype) {
     throw ("defineClassProperties on a Class without prototype");
   }
 
   var keys = Object.keys (properties), i = 0, l = keys.length, prop_name, desc;
-  for (; i < l; i++)
-  {
+  for (; i < l; i++) {
     prop_name = keys [i]
     desc = properties [prop_name];
     defineClassProperty (the_class, prop_name, desc);
@@ -561,33 +452,28 @@ var OBJECT_CLASS = '[object Object]';
 /**
  * @private
  */
-function clone (object)
-{
+function clone (object) {
   var destination;
 
-  switch (object)
-  {
+  switch (object) {
     case null: return null;
     case undefined: return undefined;
   }
   
   if (object.clone) return object.clone ();
 
-  switch (_toString.call (object))
-  {
+  switch (_toString.call (object)) {
     case OBJECT_CLASS:
     case OBJECT_TYPE:
-      destination = {};
-      for (var property in object)
-      {
+      destination = {}
+      for (var property in object) {
         destination[property] = clone (object [property]);
       }
       return destination;
 
     case ARRAY_CLASS: // should not occur because of Array.clone
       destination = [];
-      for (var i = 0; i < object.length; i++)
-      {
+      for (var i = 0; i < object.length; i++) {
         destination [i] = clone (object [i]);
       }
       return destination;
@@ -601,7 +487,7 @@ function clone (object)
     default:
       return object;
   }
-};
+}
 
 /**
  *  Returns a JSON string.
@@ -610,10 +496,9 @@ function clone (object)
  *
  * @param {Object} value The object to be serialized.
  **/
-function toJSON (value)
-{
+function toJSON (value) {
   return JSON.stringify (value);
-};
+}
 
 /********************************************************************
                     Testing methods
@@ -642,10 +527,9 @@ var _toString = Object.prototype.toString;
  *
  * @param {Object} object The object to test.
  **/
-function isElement (object)
-{
+function isElement (object) {
   return !!(object && object.nodeType === 1);
-};
+}
 
 /**
  *  Returns `true` if `object` is an [[Array]]; `false` otherwise.
@@ -663,7 +547,7 @@ function isElement (object)
  * @param {Object} object The object to test.
  **/
 var isArray = Array.isArray ||
-  function (object) { return _toString.call (object) === ARRAY_CLASS;};
+  function (object) { return _toString.call (object) === ARRAY_CLASS;}
 
 /**
  *  Returns `true` if `object` is an Function; `false` otherwise.
@@ -672,10 +556,9 @@ var isArray = Array.isArray ||
  *
  * @param {Object} object The object to test.
  **/
-function isFunction (object)
-{
+function isFunction (object) {
   return typeof object === "function";
-};
+}
 
 /**
  *  Returns `true` if `object` is an String; `false` otherwise.
@@ -692,10 +575,9 @@ function isFunction (object)
  *
  * @param {Object} object The object to test.
  **/
-function isString (object)
-{
+function isString (object) {
   return _toString.call (object) === STRING_CLASS;
-};
+}
 
 /**
  *  Returns `true` if `object` is an Number; `false` otherwise.
@@ -715,11 +597,10 @@ function isString (object)
  *
  * @param {Object} object The object to test.
  **/
-function isNumber (object)
-{
+function isNumber (object) {
   return (typeof object === 'number' && isFinite(object)) ||
       object instanceof Number;
-};
+}
 
 /**
  *  Returns `true` if `object` is an "pure" Object; `false` otherwise.
@@ -754,7 +635,7 @@ function isObject (object) {
   } catch (e) {
     return false;
   }
-};
+}
 
 /**
  *  Returns `true` if `object` is of type `undefined`; `false` otherwise.
@@ -777,10 +658,9 @@ function isObject (object) {
  *
  * @param {Object} object The object to test.
  **/
-function isUndefined (object)
-{
+function isUndefined (object) {
   return typeof object === "undefined";
-};
+}
 
 /********************************************************************
                     Element Class testing
@@ -799,9 +679,8 @@ function isUndefined (object)
  * @param {String} className the className to check
  * @return {Boolean} true if the element has the given className
 */
-function hasClassName (element, className)
-{
-  if (!element) { return; }
+function hasClassName (element, className) {
+  if (!element) return
   var elementClassName = element.className;
   return (elementClassName && elementClassName.length > 0 &&
     (elementClassName === className ||
@@ -818,10 +697,9 @@ function hasClassName (element, className)
  *
  * @param {String} className the className to add
 */
-function addClassName ()
-{
+function addClassName () {
   var element = arguments [0], className, i = 1, l = arguments.length;
-  if (!element) { return; }
+  if (!element) return
 
   if (element.classList) {
     for (; i < l; i++) {
@@ -830,8 +708,7 @@ function addClassName ()
     return element;
   }
 
-  for (; i < l; i++)
-  {
+  for (; i < l; i++) {
     className = arguments [i];
     if (!hasClassName(element, className)) {
       element.className = (element.className ? element.className + ' ' : '') + className;
@@ -851,10 +728,9 @@ function addClassName ()
  *
  * @param {String} className the className to remove
 */
-function removeClassName ()
-{
+function removeClassName () {
   var element = arguments [0], className, i = 1, l = arguments.length;
-  if (!element || !element.className) { return; }
+  if (!element || !element.className) return
   
   if (element.classList) {
     for (; i < l; i++) {
@@ -882,9 +758,8 @@ function removeClassName ()
  *
  * @param {String} className the className
 */
-function toggleClassName (element, className)
-{
-  if (!element) { return; }
+function toggleClassName (element, className) {
+  if (!element) return
 
   if (element.classList) {
     element.classList.toggle (className);
@@ -906,8 +781,7 @@ function toggleClassName (element, className)
  *
  * @param {String} str String The string
  */
-function htmlEncode (str)
-{
+function htmlEncode (str) {
   if (!isString (str)) return '';
 
   return str.replace (/&/g, "&amp;").
@@ -921,8 +795,7 @@ function htmlEncode (str)
  *
  * @param {String} str String The string
  */
-function strip (str)
-{
+function strip (str) {
   if (!isString (str)) return '';
 
   return str.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -936,8 +809,7 @@ function strip (str)
  * @param {String} str String The string
  * @return {String} the result
  */
-function camelize (str)
-{
+function camelize (str) {
   if (!isString (str)) return '';
 
   var parts = str.split ('-'), len = parts.length;
@@ -961,8 +833,7 @@ function camelize (str)
  * @param {String} str String The string
  * @return {String} the result
  */
-function capitalize (str)
-{
+function capitalize (str) {
   if (!isString (str)) return '';
 
   return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
@@ -977,8 +848,7 @@ function capitalize (str)
  * @param {String} str String The string
  * @return {String} the result
  */
-function underscore (str)
-{
+function underscore (str) {
   if (!isString (str)) return '';
 
   return str.replace (/::/g, '/')
@@ -999,36 +869,31 @@ function underscore (str)
  * @param {String} str String The string
  * @return {Object} the result
  */
-function parseJSON (json)
-{
+function parseJSON (json) {
   if (!json) return null;
   var temp = JSON.parse (json);
 
   if (!__date_reg_exp.test (json)) return temp;
 
-  function manageDate (obj)
-  {
-    if (isString (obj))
-    {
+  function manageDate (obj) {
+    if (isString (obj)) {
       var result = __date_reg_exp.exec (obj);
-      if (result && result [1]) // JSON Date -> Date generation
-      {
+      if (result && result [1]) {
+        // JSON Date -> Date generation
         obj = new Date (parseInt (result [1]));
       }
     }
-    else if (isArray (obj))
-    {
-      for (var i = 0; i < obj.length; i++) { obj [i] = manageDate (obj [i]); }
+    else if (isArray (obj)) {
+      for (var i = 0; i < obj.length; i++) obj [i] = manageDate (obj [i])
     }
-    else if (obj instanceof Date) { return obj; }
-    else if (obj instanceof Object)
-    {
-      for (var key in obj) { obj [key] = manageDate (obj [key]); }
+    else if (obj instanceof Date) return obj
+    else if (obj instanceof Object) {
+      for (var key in obj) obj [key] = manageDate (obj [key])
     }
     return obj;
   }
   return manageDate (temp);
-};
+}
 
 /********************************************************************
                     Element management
@@ -1045,12 +910,11 @@ function parseJSON (json)
  * @param {Element} elem The element
  *	@returns {Number} the height
  **/
-function getElementHeight (elem)
-{
+function getElementHeight (elem) {
   if (!isElement (elem)) return;
 
   return getElementDimensions (elem).height;
-};
+}
 
 /**
  *  Returns the width of `element`.<br/>
@@ -1063,12 +927,11 @@ function getElementHeight (elem)
  * @param {Element} elem The element
  *	@returns {Number} the width
  **/
-function getElementWidth (elem)
-{
+function getElementWidth (elem) {
   if (!isElement (elem)) return;
 
   return getElementDimensions (elem).width;
-};
+}
 
 /**
  *  Finds the computed width and height of `element` and returns them as
@@ -1084,18 +947,17 @@ function getElementWidth (elem)
  * @param {Element} elem The element
  *	@returns {Object} the key/value width & height
  **/
-function getElementDimensions (elem)
-{
-  if (!isElement (elem)) return {};
+function getElementDimensions (elem) {
+  if (!isElement (elem)) return {}
 
   var display = getElementStyle (elem, 'display'),
     els = elem.style, originalVisibility = els.visibility,
     originalPosition = els.position, originalDisplay = els.display,
     originalWidth = 0, originalHeight = 0;
 
-  if (display !== 'none' && display !== null) // Safari bug
-  {
-    return {width: elem.offsetWidth, height: elem.offsetHeight};
+  if (display !== 'none' && display !== null) {
+    // Safari bug
+    return { width: elem.offsetWidth, height: elem.offsetHeight }
   }
   // All *Width and *Height properties give 0 on elements with display none,
   // so enable the element temporarily
@@ -1110,8 +972,8 @@ function getElementDimensions (elem)
   els.position = originalPosition;
   els.visibility = originalVisibility;
 
-  return {width: originalWidth, height: originalHeight};
-};
+  return {width: originalWidth, height: originalHeight}
+}
 
 /**
  *  Returns the given CSS property value of `element`.<br/> The property can be
@@ -1136,20 +998,18 @@ function getElementDimensions (elem)
  * @param {String} style The style to find
  *	@returns {Object} the key/value width & height
  **/
-function getElementStyle (elem, style)
-{
+function getElementStyle (elem, style) {
   if (!isElement (elem)) return;
 
-  style = style === 'float' ? 'cssFloat' : camelize (style);
+  style = style === 'float' ? 'cssFloat' : camelize (style)
   var value = elem.style[style], css;
-  if (!value || value === 'auto')
-  {
-    css = document.defaultView.getComputedStyle (elem, null);
-    value = css ? css[style] : null;
+  if (!value || value === 'auto') {
+    css = document.defaultView.getComputedStyle (elem, null)
+    value = css ? css[style] : null
   }
-  if (style === 'opacity') { return value ? parseFloat (value) : 1.0; }
-  return value === 'auto' ? null : value;
-};
+  if (style === 'opacity') return value ? parseFloat (value) : 1.0
+  return value === 'auto' ? null : value
+}
 
 /**
  *  Modifies `element`'s CSS style properties. Styles are passed as a hash of
@@ -1167,22 +1027,17 @@ function getElementStyle (elem, style)
  * @param {Element} elem The element
  * @param {Object} style The style to modify
  */
-function setElementStyle (elem, styles)
-{
+function setElementStyle (elem, styles) {
   if (!isElement (elem)) return;
 
   var elementStyle = elem.style, property;
 
-  for (property in styles)
-  {
-    if (property === 'opacity')
-    {
+  for (property in styles) {
+    if (property === 'opacity') {
       setElementOpacity (elem, styles[property]);
     }
-    else
-    {
-      if (!styles [property])
-      {
+    else {
+      if (!styles [property]) {
         elementStyle.removeProperty (property);
       }
       elementStyle[(property === 'float' || property === 'cssFloat') ?
@@ -1190,7 +1045,7 @@ function setElementStyle (elem, styles)
           property] = styles[property];
     }
   }
-};
+}
 
 /**
  *  Sets the visual opacity of an element while working around inconsistencies
@@ -1211,8 +1066,7 @@ function setElementStyle (elem, styles)
  * @param {Element} elem The element
  * @param {Number} value The opacity
  **/
-function setElementOpacity (elem, value)
-{
+function setElementOpacity (elem, value) {
   if (!isElement (elem)) return;
   var elementStyle = elem.style;
 
@@ -1220,7 +1074,7 @@ function setElementOpacity (elem, value)
 
   elementStyle.opacity = (value === 1 || value === '') ? '' :
     (value < 0.00001) ? 0 : value;
-};
+}
 
 /**
  *  Returns the opacity of the element.
@@ -1230,12 +1084,11 @@ function setElementOpacity (elem, value)
  * @param {Element} elem The element
  * @return {Number} value The opacity
  **/
-function getElementOpacity (elem)
-{
+function getElementOpacity (elem) {
   if (!isElement (elem)) return;
 
-  return getElementStyle (elem, 'opacity');
-};
+  return getElementStyle (elem, 'opacity')
+}
 
 /**
  * Compute the elements position in terms of the window viewport
@@ -1245,14 +1098,11 @@ function getElementOpacity (elem)
  *
  * @return {vs.Point} the x,y absolute position of a element
  **/
-function getElementAbsolutePosition (element, force)
-{
-  if (!element)
-  { return null; }
-  if (!force && element.getBoundingClientRect)
-  {
+function getElementAbsolutePosition (element, force) {
+  if (!element) { return null; }
+  if (!force && element.getBoundingClientRect) {
     var rec = element.getBoundingClientRect ();
-    if (rec) { return new vs.Point (rec.left, rec.top); }
+    if (rec) { return new Point (rec.left, rec.top); }
   }
   var
     x = 0, y = 0;
@@ -1260,12 +1110,10 @@ function getElementAbsolutePosition (element, force)
     borderXOffset = 0,
     borderYOffset = 0;
     
-  while (parent)
-  {
+  while (parent) {
     borderXOffset = 0;
     borderYOffset = 0;
-    if (parent != element)
-    {
+    if (parent != element) {
       borderXOffset = parseInt (
         parent.currentStyle?
         parent.currentStyle ["borderLeftWidth"]:0, 0);
@@ -1287,14 +1135,13 @@ function getElementAbsolutePosition (element, force)
       parent = parent.offsetParent;
     }
   }
-  return new vs.Point (x, y);
+  return new Point (x, y);
 }
 
 /**
  * @private
  */
-function _getBoundingClientRect_api1 (e)
-{
+function _getBoundingClientRect_api1 (e) {
   var rec = getElementAbsolutePosition (e);
   return {
     width: e.offsetWidth,
@@ -1302,15 +1149,14 @@ function _getBoundingClientRect_api1 (e)
     left: rec.x,
     top: rec.y
   }
-};
+}
 
 /**
  * @private
  */
-function _getBoundingClientRect_api2 (e)
-{
+function _getBoundingClientRect_api2 (e) {
   return (e && e.getBoundingClientRect)?e.getBoundingClientRect ():null;
-};
+}
 
 /**
  *  Set the absolute element position.
@@ -1321,9 +1167,8 @@ function _getBoundingClientRect_api2 (e)
  * @param {Number} x The element left position
  * @param {Number} y The element top position
  **/
-function setElementPos (elem, x, y)
-{
-  if (!elem) { return; }
+function setElementPos (elem, x, y) {
+  if (!elem) return
   var elementStyle = elem.style;
 
   elementStyle.left = x + 'px';
@@ -1339,9 +1184,8 @@ function setElementPos (elem, x, y)
  * @param {Number} w The element width
  * @param {Number} w The element height
  **/
-function setElementSize (elem, w, h)
-{
-  if (!elem) { return; }
+function setElementSize (elem, w, h) {
+  if (!elem) return
   var elementStyle = elem.style;
 
   elementStyle.width = w + 'px';
@@ -1356,34 +1200,20 @@ function setElementSize (elem, w, h)
  * @param {Element} elem The element
  * @param {boolean} v True if the element should be visible or false
  **/
-function setElementVisibility (elem, v)
-{
-  if (!elem) { return; }
+function setElementVisibility (elem, v) {
+  if (!elem) return
   var elementStyle = elem.style;
 
-  if (elementStyle || util.isString (elem.innerHTML))
-  {
-    if (v)
-    {
-      elementStyle.visibility = 'visible';
-    }
-    else
-    {
-      elementStyle.visibility = 'hidden';
-    }
+  if (elementStyle || util.isString (elem.innerHTML)) {
+    if (v) elementStyle.visibility = 'visible'
+    else elementStyle.visibility = 'hidden'
   }
 //  else if (elem instanceof CharacterData)
 //  {}
-  else // SVG
-  {
-    if (v)
-    {
-      elem.setAttribute ('visibility', 'visible');
-    }
-    else
-    {
-      elem.setAttribute ('visibility', 'hidden');
-    }
+  else {
+    // SVG
+    if (v) elem.setAttribute ('visibility', 'visible')
+    else elem.setAttribute ('visibility', 'hidden')
   }
 }
 
@@ -1395,24 +1225,19 @@ function setElementVisibility (elem, v)
  * @param {Element} elem The element
  * @return {boolean}
  **/
-function isElementVisible (elem)
-{
-  if (!elem) { return false; }
+function isElementVisible (elem) {
+  if (!elem) return false
   var elementStyle = elem.style;
 
-  if (elementStyle || util.isString (elem.innerHTML))
-  {
+  if (elementStyle || util.isString (elem.innerHTML)) {
     if (elementStyle.visibility === 'hidden') { return false; }
-    else { return true; }
+    else return true
   }
-  else if (elem instanceof CharacterData)
-  {
-    return true;
-  }
-  else // SVG
-  {
-    if (elem.getAttribute ('visibility') === 'hidden') { return false; }
-    else { return true; }
+  else if (elem instanceof CharacterData) return true
+  else {
+    // SVG 
+    if (elem.getAttribute ('visibility') === 'hidden') return false
+    else return true
   }
 }
 
@@ -1423,16 +1248,12 @@ function isElementVisible (elem)
  *
  * @param {Element} elem The element
  **/
-function removeAllElementChild (elem)
-{
-  if (!elem || !elem.childNodes) { return; }
+function removeAllElementChild (elem) {
+  if (!elem || !elem.childNodes) return
 
   var l = elem.childNodes.length;
-  while (l--)
-  {
-    elem.removeChild (elem.firstChild);
-  }
-};
+  while (l--) elem.removeChild (elem.firstChild)
+}
 
 /**
  *  Safe set inner HTML of a element
@@ -1442,22 +1263,20 @@ function removeAllElementChild (elem)
  * @param {Element} elem The element
  * @param {String} txt The text
  **/
-function safeInnerHTML (elem, html_text)
-{
-  if (!elem || !isString (html_text)) { return; }
+function safeInnerHTML (elem, html_text) {
+  if (!elem || !isString (html_text)) return
 
   // MS Window 8 management
   if (window.MSApp && window.MSApp.execUnsafeLocalFunction)
     window.MSApp.execUnsafeLocalFunction (function() {
       elem.innerHTML = html_text;
     });
-  else
-  {
+  else {
     // deactivated because to restrictive
     // if (window.toStaticHTML) html_text = window.toStaticHTML (html_text);
     elem.innerHTML = html_text;
   }
-};
+}
 
 /**
  *  Set inner Text content of a element
@@ -1467,87 +1286,32 @@ function safeInnerHTML (elem, html_text)
  * @param {Element} elem The element
  * @param {String} txt The text
  **/
-function setElementInnerText (elem, text)
-{
-  if (!elem) { return; }
+function setElementInnerText (elem, text) {
+  if (!elem) return
 
   removeAllElementChild (elem); //... deroule
 
-  if (!util.isString (text))
-  {
-    if (text === undefined) { text = ""; }
-    else if (text === null) { text = ""; }
-    else if (util.isNumber (text)) { text = "" + text; }
-    else if (text.toString) { text = text.toString (); }
-    else { text = ""; }
+  if (!util.isString (text)) {
+    if (text === undefined) text = ""
+    else if (text === null) text = ""
+    else if (util.isNumber (text)) text = "" + text
+    else if (text.toString) text = text.toString ()
+    else text = ""
   }
   var lines = text.split ('\n'), i = 0;
-  if (!lines.length) { return; }
+  if (!lines.length) return
   elem.appendChild (document.createTextNode (lines [i]));
   i++;
-  for (; i < lines.length; i++)
-  {
+  for (; i < lines.length; i++) {
     elem.appendChild (document.createElement ('br'));
     elem.appendChild (document.createTextNode (lines [i]));
   }
-};
-
-/**
- *@private
- */
-function setElementWebkitTransform (elem, transform)
-{
-  if (elem && elem.style) elem.style.webkitTransform = transform;
-  else console.warn ("setElementTransform, elem null or without style");
 }
 
 /**
  *@private
  */
-function getElementWebkitTransform (elem)
-{
-  if (elem) return elem.style.webkitTransform;
-}
-
-/**
- *@private
- */
-function setElementMSTransform (elem, transform)
-{
-  if (elem && elem.style) elem.style.msTransform = transform;
-  else console.warn ("setElementTransform, elem null or without style");
-}
-
-/**
- *@private
- */
-function getElementMSTransform (elem)
-{
-  if (elem) return elem.style.msTransform;
-}
-
-/**
- *@private
- */
-function setElementMozTransform (elem, transform)
-{
-  if (elem && elem.style) elem.style.MozTransform = transform;
-  else console.warn ("setElementTransform, elem null or without style");
-}
-
-/**
- *@private
- */
-function getElementMozTransform (elem)
-{
-  if (elem) return elem.style.MozTransform;
-}
-
-/**
- *@private
- */
-function _setElementTransform (elem, transform)
-{
+function setElementTransform (elem, transform) {
   if (elem && elem.style) elem.style.transform = transform;
   else console.warn ("setElementTransform, elem null or without style");
 }
@@ -1555,50 +1319,8 @@ function _setElementTransform (elem, transform)
 /**
  *@private
  */
-function _getElementTransform (elem)
-{
+function getElementTransform (elem) {
   if (elem) return elem.style.transform;
-}
-
-/**
- *  Set the CSS transformation to a element
- *
- *  @memberOf vs.util
- *
- * @param {Element} elem The element
- * @param {String} transform css transformations
- **/
-var setElementTransform;
-
-/**
- *  get the CSS transformation to a element
- *
- *  @memberOf vs.util
- *
- * @param {Element} elem The element
- * @return {Transform} transform css transformations
- **/
-var getElementTransform;
-
-if (vsTestStyle && vsTestStyle.transform !== undefined)
-{
-  setElementTransform = _setElementTransform;
-  getElementTransform = _getElementTransform;
-}
-else if (vsTestStyle && vsTestStyle.webkitTransform !== undefined)
-{
-  setElementTransform = setElementWebkitTransform;
-  getElementTransform = getElementWebkitTransform;
-}
-else if (vsTestStyle && vsTestStyle.msTransform !== undefined)
-{
-  setElementTransform = setElementMSTransform;
-  getElementTransform = getElementMSTransform;
-}
-else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
-{
-  setElementTransform = setElementMozTransform;
-  getElementTransform = getElementMozTransform;
 }
 
 /**
@@ -1607,7 +1329,7 @@ else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
  *  @memberOf vs.util
  *
  * @param {Element} elem The element
- * @return {vs.CSSMatrix} matrix3d css transformation
+ * @return {CSSMatrix} matrix3d css transformation
  **/
 function getElementMatrixTransform (elem) {
   if (!elem) return;
@@ -1621,7 +1343,7 @@ function getElementMatrixTransform (elem) {
   else if (css.msTransform) transformMatrix = css.msTransform;
   else if (css.MozTransform) transformMatrix = css.MozTransform;
   
-  if (transformMatrix) return new vs.CSSMatrix (transformMatrix);
+  if (transformMatrix) return new CSSMatrix (transformMatrix);
 }
 
 /**
@@ -1633,12 +1355,8 @@ function getElementMatrixTransform (elem) {
  * @param {String} origin. The value is a CSS string. Ex: '50% 0%',
  *                 or '10px 10px'
  **/
-function setElementTransformOrigin (elem, value)
-{
-  if (elem && elem.style)
-  {
-    elem.style ['-' + vs.CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
-  }
+function setElementTransformOrigin (elem, value) {
+  if (elem && elem.style) elem.style ['transform-origin'] = value
   else console.warn ("setElementTransformOrigin, elem null or without style");
 }
 
@@ -1655,31 +1373,28 @@ function setElementTransformOrigin (elem, value)
  * @param {int} from Index of the first element to be removed
  * @param {int} to Index of the last element to be removed
  */
-Array.prototype._remove = function (from, to)
-{
+Array.prototype._remove = function (from, to) {
   var rest = this.slice ((to || from) + 1 || this.length);
   this.length = from < 0 ? this.length + from : from;
   return this.push.apply (this, rest);
-};
+}
 
 
 /**
  * @private
  */
-var _findItem = function (obj, from)
-{
+var _findItem = function (obj, from) {
   var len = this.length;
 
   var from = from?from:0;
   from = (from < 0)? 0: from;
 
-  while (from < len)
-  {
+  while (from < len) {
     if (this [from] === obj) { return from; }
     from++;
   }
   return -1;
-};
+}
 
 /**
  *  Find an element into this Array.
@@ -1703,46 +1418,40 @@ Array.prototype.indexOf:_findItem;
  * @param {int} to Index of the last element to be removed
  * @return {Array} the modified array
  */
-Array.prototype.remove = function (from, to)
-{
-  if ((typeof(from) === "object") || util.isString (from))
-  {
+Array.prototype.remove = function (from, to) {
+  if ((typeof(from) === "object") || util.isString (from)) {
     var i = 0;
-    while (i < this.length)
-    {
+    while (i < this.length) {
       if (this[i] === from) { this._remove (i); }
       else { i++; }
     }
   }
   else { this._remove (from, to); }
   return this;
-};
+}
 
 /**
  * Removes all elements of this Array.<br/>
  *
  * @return {Array} the modified array
  */
-Array.prototype.removeAll = function ()
-{
+Array.prototype.removeAll = function () {
   while (this.length > 0) { this._remove (0); }
   return this;
-};
+}
 
 /**
  * Return a copy of the array
  *
  * @return {Array} the modified array
  */
-Array.prototype.clone = function ()
-{
+Array.prototype.clone = function () {
   var destination = [];
-  for (var i = 0; i < this.length; i++)
-  {
+  for (var i = 0; i < this.length; i++) {
     destination [i] = clone (this [i]);
   }
   return destination;
-};
+}
 
 /********************************************************************
                          export
@@ -1760,23 +1469,19 @@ Array.prototype.clone = function ()
  *
  * @return {Script|Link} Returns a script or link element add to the document
  */
-function importFile (path, doc, clb, type, first)
-{
+function importFile (path, doc, clb, type, first) {
   if (!doc) { doc = document; }
 
   var js_effets, css_style;
 
-  if (type === 'js' || path.search ('\\.js') >= 0)
-  {
+  if (type === 'js' || path.search ('\\.js') >= 0) {
     js_effets = doc.createElement ("script");
     js_effets.setAttribute ("type", "text/javascript");
     js_effets.setAttribute ("src", path);
-    if (clb)
-    {
-      js_effets.onload = function ()
-      {
+    if (clb) {
+      js_effets.onload = function () {
         clb.call (this, path);
-      };
+      }
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
     
@@ -1788,22 +1493,19 @@ function importFile (path, doc, clb, type, first)
 
     return js_effets;
   }
-  else if (type === 'css' || path.search('\\.css') >= 0)
-  {
+  else if (type === 'css' || path.search('\\.css') >= 0) {
     css_style = doc.createElement ("link");
     css_style.setAttribute ("rel", "stylesheet");
     css_style.setAttribute ("type", "text/css");
     css_style.setAttribute ("href", path);
     css_style.setAttribute ("media", "screen");
-    if (util.isFunction (clb))
-    {
+    if (util.isFunction (clb)) {
       var count = 0;
 
       /**
        * @private
        */
-      (function()
-      {
+      (function() {
         if (!css_style.sheet)
         {
           if (count++ < 100)
@@ -1815,7 +1517,7 @@ function importFile (path, doc, clb, type, first)
             console.error ('CSS load of ' + path + ' failed!');
           }
           return;
-        };
+        }
         clb.call (document, path);
       })();
     }
@@ -1851,16 +1553,14 @@ function importFile (path, doc, clb, type, first)
  * @param {String} selector CSS Selector
  * @param {Array} rules the array of rules
  */
-function addCssRules (selector, rules)
-{
-  if (!isArray (rules)) { return; }
+function addCssRules (selector, rules) {
+  if (!isArray (rules)) return
 
   var i = rules.length;
-  while (i--)
-  {
+  while (i--) {
     addCssRule (selector, rules [i]);
   }
-};
+}
 
 var __app_style_sheet__ = null;
 /**
@@ -1880,10 +1580,8 @@ var __app_style_sheet__ = null;
  * @param {String} rule the rule using the following format:
  *   "prop_name: value"
  */
-function addCssRule (selector, rule)
-{
-  if (!__app_style_sheet__)
-  {
+function addCssRule (selector, rule) {
+  if (!__app_style_sheet__) {
     var style = document.createElement ('style');
     /* For Safari */
     style.appendChild (document.createTextNode (''));
@@ -1895,22 +1593,18 @@ function addCssRule (selector, rule)
   }
 
   var l = 0;
-  if (__app_style_sheet__.cssRules)
-  {
+  if (__app_style_sheet__.cssRules) {
     l = __app_style_sheet__.cssRules.length;
-  } else if (__app_style_sheet__.rules)
-  {
+  } else if (__app_style_sheet__.rules) {
     l = __app_style_sheet__.rules.length;
   }
 
-  if (__app_style_sheet__.insertRule)
-  {
+  if (__app_style_sheet__.insertRule) {
     __app_style_sheet__.insertRule (selector + ' {' + rule + '}', l);
-  } else if (__app_style_sheet__.addRule)
-  {
+  } else if (__app_style_sheet__.addRule) {
     __app_style_sheet__.addRule (selector, rule, l);
   }
-};
+}
 
 
 /**
@@ -1926,43 +1620,35 @@ var SET_STYLE_OPTIMIZATION = true;
  *
  * @param {String} title
  */
-var setActiveStyleSheet = function (title)
-{
+var setActiveStyleSheet = function (title) {
   var i = 0, stylesheets = document.getElementsByTagName ("link"),
     stylesheet, info, id, app, size;
 
   var apps = vs.Application_applications;
 
-  if (SET_STYLE_OPTIMIZATION)
-  {
-    if (apps) for (id in apps)
-    {
+  if (SET_STYLE_OPTIMIZATION) {
+    if (apps) for (id in apps) {
       app = apps [id];
       if (app.view) app.view.style.display = "none";
     }
   }
 
-  for (i = 0; i < stylesheets.length; i++)
-  {
+  for (i = 0; i < stylesheets.length; i++) {
     stylesheet = stylesheets [i];
     // If the stylesheet doesn't contain the title attribute, assume it's
     // a persistent stylesheet and should not be disabled
     if (!stylesheet.getAttribute ("title")) { continue; }
     // All other stylesheets than the one specified by "title" should be
     // disabled
-    if (stylesheet.getAttribute ("title") !== title)
-    {
+    if (stylesheet.getAttribute ("title") !== title) {
       stylesheet.setAttribute ("disabled", true);
-    } else
-    {
+    } else {
       stylesheet.removeAttribute ("disabled");
     }
   }
 
-  if (SET_STYLE_OPTIMIZATION)
-  {
-    if (apps) for (id in apps)
-    {
+  if (SET_STYLE_OPTIMIZATION) {
+    if (apps) for (id in apps) {
       app = apps [id];
       if (app.view) app.view.style.display = "block";
     }
@@ -1989,32 +1675,27 @@ var setActiveStyleSheet = function (title)
  *
  * @param {String} comp_name The GUI component name
  */
-function preloadTemplate (comp_name)
-{
+function preloadTemplate (comp_name) {
   var path = comp_name + '.xhtml', xmlRequest;
 
-  if (vs.ui && vs.ui.View && vs.ui.View.__comp_templates [path]) { return; }
+  if (vs.ui && vs.ui.View && vs.ui.View.__comp_templates [path]) return
 
   xmlRequest = new XMLHttpRequest ();
   xmlRequest.open ("GET", path, false);
   xmlRequest.send (null);
 
-  if (xmlRequest.readyState === 4)
-  {
-    if (xmlRequest.status === 200 || xmlRequest.status === 0)
-    {
+  if (xmlRequest.readyState === 4) {
+    if (xmlRequest.status === 200 || xmlRequest.status === 0) {
       data = xmlRequest.responseText;
       if (vs.ui && vs.ui.View) vs.ui.View.__comp_templates [path] = data;
     }
-    else
-    {
+    else {
       console.error
         ("Template file for component '" + comp_name + "' unfound");
       return;
     }
   }
-  else
-  {
+  else {
     console.error
       ("Pb when load the component '" + comp_name + "' template");
     return;
@@ -2022,22 +1703,39 @@ function preloadTemplate (comp_name)
   xmlRequest = null;
 }
 
+/**
+ * Returns an unique Id <p>
+ * The algorithm uses a time stamp and a random number to generate the id.
+ *
+ * @memberOf vs.core
+ *
+ * @return {String}
+ */
+function createUniqueId () {
+  return "_id_" + new Date().getTime() + "" + Math.floor (Math.random() * 1000000);
+}
+
+var _extends = (Object.defineProperty)?_extend_api2:_extend_api1;
+var defineProperty =
+  (Object.defineProperty)?_defineProperty_api2:_defineProperty_api1;
+
 /********************************************************************
                          export
 *********************************************************************/
 
-util.extend (util, {
+module.exports = {
   vsTestElem:              vsTestElem,
-  vsTestStyle:             vsTestStyle,
-
+  
   // Class functions
   extendClass:             extendClass,
-  defineProperty:
-        (Object.defineProperty)?_defineProperty_api2:_defineProperty_api1,
+  extends:                 _extends,
+  defineProperty:          defineProperty,
   defineClassProperty:     defineClassProperty,
   defineClassProperties:   defineClassProperties,
   clone:                   clone,
   free:                    free,
+  CSSMatrix:               CSSMatrix,
+  createUniqueId:          createUniqueId,
 
   // JSON functions
   toJSON:                  toJSON,
@@ -2101,4 +1799,4 @@ util.extend (util, {
   _defineProperty_api2: _defineProperty_api2, // export only for testing purpose
   _extend_api1:         _extend_api1, // export only for testing purpose
   _extend_api2:         _extend_api2 // export only for testing purpose
-});
+}

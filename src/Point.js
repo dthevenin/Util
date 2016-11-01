@@ -34,22 +34,15 @@
  * @param {Number} the x-coordinate value.
  * @param {Number} the y-coordinate value.
 */
-function Point (x, y)
-{
-  if (util.isNumber (x))
-  this.x = x;
-  if (util.isNumber (y))
-  this.y = y;
-}
+class Point {
 
-Point.prototype = {
+  constructor (x, y) {
+    this.x = 0
+    this.y = 0
 
-  /*****************************************************************
-   *
-   ****************************************************************/
- 
-   x: 0,
-   y: 0,
+    if (util.isNumber (x)) this.x = x
+    if (util.isNumber (y)) this.y = y
+  }
 
   /*****************************************************************
    *              
@@ -65,8 +58,7 @@ Point.prototype = {
    * @param {vs.CSSMatrix} matrix he matrix
    * @returns {vs.Point} the matrix
    */
-  matrixTransform : function (matrix)
-  {
+  matrixTransform (matrix) {
     var matrix_tmp = new CSSMatrix ();
 
     matrix_tmp = matrix_tmp.translate (this.x, this.y, this.z || 0);
@@ -74,14 +66,6 @@ Point.prototype = {
 
     var result = new Point (matrix.m41, matrix.m42);
 
-    delete (matrix_tmp);
-    delete (matrix);
-
     return result;
   }
-};
-
-/********************************************************************
-                      Export
-*********************************************************************/
-vs.Point = Point;
+}
