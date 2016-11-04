@@ -200,7 +200,6 @@ function free (obj) {
   if (!obj) return
   if (obj._free) { obj._free (); }
   if (obj.destructor) { obj.destructor (); }
-  delete (obj);
   obj = null;
 }
 
