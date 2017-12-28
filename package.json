@@ -1,5 +1,5 @@
 {
-  "name": "vs_util",
+  "name": "vs_utils",
   "version": "1.0.0",
   "description": "Set of utilities functions we need for developing web app.",
   "main": "./lib/vs_utils.js",
