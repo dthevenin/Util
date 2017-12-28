@@ -17,11 +17,14 @@
  
  Use code from Canto.js Copyright 2010 Steven Levithan <stevenlevithan.com>
 */
-  
+
+import { isNumber } from './Utils'
+import CSSMatrix from './CSSMatrix'
+
 /**
  *  @class
- *  vs.Point is an (x, y) coordinate pair. 
- *  When you use an vs.Point object in matrix operations, the object is 
+ *  Point is an (x, y) coordinate pair. 
+ *  When you use an Point object in matrix operations, the object is 
  *  treated as a vector of the following form <x, y, 1>
  *
  * @author David Thevenin
@@ -29,27 +32,16 @@
  *  @constructor
  *  Main constructor
  *
- * @name vs.Point
+ * @name Point
  *
  * @param {Number} the x-coordinate value.
  * @param {Number} the y-coordinate value.
 */
-function Point (x, y)
-{
-  if (util.isNumber (x))
-  this.x = x;
-  if (util.isNumber (y))
-  this.y = y;
-}
-
-Point.prototype = {
-
-  /*****************************************************************
-   *
-   ****************************************************************/
- 
-   x: 0,
-   y: 0,
+class Point {
+  constructor(x, y) {
+    this.x = isNumber(x) ? x : 0;
+    this.x = isNumber(x) ? x : 0;
+  }
 
   /*****************************************************************
    *              
@@ -59,23 +51,19 @@ Point.prototype = {
    * Applies the given 2×3 matrix transformation on this Point object and 
    * returns a new, transformed Point object.
    *
-   * @name vs.Point#matrixTransform
+   * @name Point#matrixTransform
    * @function
    * @public
-   * @param {vs.CSSMatrix} matrix he matrix
-   * @returns {vs.Point} the matrix
+   * @param {CSSMatrix} matrix he matrix
+   * @returns {Point} the matrix
    */
-  matrixTransform : function (matrix)
-  {
-    var matrix_tmp = new CSSMatrix ();
+  matrixTransform(matrix) {
+    let matrixTmp = new CSSMatrix ();
 
-    matrix_tmp = matrix_tmp.translate (this.x, this.y, this.z || 0);
-    matrix = matrix.multiply (matrix_tmp);
+    matrixTmp = matrixTmp.translate (this.x, this.y, this.z || 0);
+    matrix = matrix.multiply (matrixTmp);
 
-    var result = new Point (matrix.m41, matrix.m42);
-
-    delete (matrix_tmp);
-    delete (matrix);
+    const result = new Point (matrix.m41, matrix.m42);
 
     return result;
   }
@@ -84,4 +72,4 @@ Point.prototype = {
 /********************************************************************
                       Export
 *********************************************************************/
-vs.Point = Point;
+export default Point;

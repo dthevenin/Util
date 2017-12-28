@@ -627,3 +627,5 @@ FirminCSSMatrix.prototype.toString = function() {
     return self[p].toFixed(6);
   }).join(", ") + ")";
 };
+
+export default FirminCSSMatrix;
