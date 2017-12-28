@@ -16,6 +16,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+import Point from './Point';
+import CSSMatrix from './CSSMatrix';
+
 /********************************************************************
 
 *********************************************************************/
@@ -33,21 +36,23 @@ var vsTestElem = (document)?document.createElement ('vstestelem'):null;
  */
 var vsTestStyle = (vsTestElem)?vsTestElem.style:null;
 var __date_reg_exp = /\/Date\((-?\d+)\)\//;
+let SUPPORT_3D_TRANSFORM = false;
+let CSS_VENDOR;
 
 if (vsTestStyle)
 {
   if (vsTestStyle.webkitTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM =
+    SUPPORT_3D_TRANSFORM =
       'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix ();
 
   else if (vsTestStyle.MozTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
+    SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
 
   else if (vsTestStyle.msTransform !== undefined)
-    vs.SUPPORT_3D_TRANSFORM =
+    SUPPORT_3D_TRANSFORM =
      'MSCSSMatrix' in window && 'm11' in new MSCSSMatrix ();
 
-  vs.CSS_VENDOR = (function () {
+  CSS_VENDOR = (function () {
     var vendors = ['MozT', 'msT', 'OT', 'webkitT', 't'],
       transform,
       l = vendors.length;
@@ -61,80 +66,9 @@ if (vsTestStyle)
   })();
 }
 
-vs.SUPPORT_CSS_TRANSFORM = (vs.CSS_VENDOR !== null) ? true : false;
+const SUPPORT_CSS_TRANSFORM = (CSS_VENDOR !== null) ? true : false;
 
-/**
- * Represents a 4×4 homogeneous matrix that enables Document Object Model (DOM)
- * scripting access to Cascading Style Sheets (CSS) 2-D and 3-D Transforms
- * functionality.
- * @public
- * @memberOf vs
- */
-vs.CSSMatrix = ('WebKitCSSMatrix' in window)?window.WebKitCSSMatrix:
-  ('MSCSSMatrix' in window)?window.MSCSSMatrix:FirminCSSMatrix;
 
-/**
- *  vs.CSSMatrix#isAffine() -> Boolean
- *
- *  Determines whether the matrix is affine.
- **/
-if (!vs.CSSMatrix.prototype.isAffine) {
-  vs.CSSMatrix.prototype.isAffine = function () {
-    return !(this.m13 || this.m14 || this.m23 || this.m24 || this.m31 ||
-      this.m32 ||this.m33 !== 1 && this.m34 || this.m43 || this.m44 !== 1);
-  }
-}
-
-var precision = 1000;
-
-/**
- *  vs.CSSMatrix#vs.getMatrixStr() -> String
- *  return affine transformation matrix
- * @public
- * @function
- *
- *  Returns a string representation of the 3d matrix.
- **/
-vs.CSSMatrix.prototype.getMatrixStr = function () {
-  var points = [
-    ~~(this.a * precision) / precision,
-    ~~(this.b * precision) / precision,
-    ~~(this.c * precision) / precision,
-    ~~(this.d * precision) / precision,
-    ~~(this.e * precision) / precision,
-    ~~(this.f * precision) / precision
-  ];
-  return "matrix(" + points.join(", ") + ")";
-}
-
-/**
- *  vs.CSSMatrix#vs.getMatrix3dStr() -> String
- * @public
- * @function
- *
- *  Returns a string representation of the 3d matrix.
- **/
-vs.CSSMatrix.prototype.getMatrix3dStr = function () {
-  var points = [
-    ~~(this.m11 * precision) / precision,
-    ~~(this.m12 * precision) / precision,
-    ~~(this.m13 * precision) / precision,
-    ~~(this.m14 * precision) / precision,
-    ~~(this.m21 * precision) / precision,
-    ~~(this.m22 * precision) / precision,
-    ~~(this.m23 * precision) / precision,
-    ~~(this.m24 * precision) / precision,
-    ~~(this.m31 * precision) / precision,
-    ~~(this.m32 * precision) / precision,
-    ~~(this.m33 * precision) / precision,
-    ~~(this.m34 * precision) / precision,
-    ~~(this.m41 * precision) / precision,
-    ~~(this.m42 * precision) / precision,
-    ~~(this.m43 * precision) / precision,
-    ~~(this.m44 * precision) / precision
-  ];
-  return "matrix3d(" + points.join(", ") + ")";
-}
 /**
  * Tells the browser that you wish to perform an animation and requests
  * that the browser schedule a repaint of the window for the next animation
@@ -148,7 +82,7 @@ vs.CSSMatrix.prototype.getMatrix3dStr = function () {
  * @param {Function} callback A parameter specifying a function to call
  *        when it's time to update your animation for the next repaint.
  */
-var requestAnimationFrame =
+const _requestAnimationFrame =
   window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
@@ -156,27 +90,25 @@ var requestAnimationFrame =
   window.msRequestAnimationFrame ||
   function (callback) { window.setTimeout (callback, 1000 / 60); };
 
-vs.requestAnimationFrame = requestAnimationFrame.bind (window);
+const requestAnimationFrame = _requestAnimationFrame.bind (window);
 
-var cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
+const _cancelRequestAnimationFrame = window.cancelRequestAnimationFrame ||
   window.webkitCancelAnimationFrame ||
   window.mozCancelAnimationFrame ||
   window.oCancelAnimationFrame ||
   window.msCancelAnimationFrame ||
   clearTimeout;
 
-vs.cancelRequestAnimationFrame = cancelRequestAnimationFrame.bind (window);
+const cancelRequestAnimationFrame = _cancelRequestAnimationFrame.bind (window);
 
-var setImmediate =
+const _setImmediate =
   window.setImmediate ||
   function (func, args) { return this.setTimeout (func, 0, args); };
 
-vs.setImmediate = setImmediate.bind (window);
+const setImmediate = _setImmediate.bind (window);
   
-var clearImmediate =
-  window.clearImmediate || window.clearTimeout;
-  
-vs.clearImmediate = clearImmediate.bind (window);
+const _clearImmediate = window.clearImmediate || window.clearTimeout;
+const clearImmediate = _clearImmediate.bind (window);
 
 /********************************************************************
 
@@ -223,7 +155,7 @@ function _extend_api2 (destination, source)
 
     if (desc && (desc.get || desc.set))
     {
-      util.defineProperty (destination, property, desc);
+      defineProperty (destination, property, desc);
     }
     else
     {
@@ -241,7 +173,7 @@ function _extend_api2 (destination, source)
  * @param {Object} destination The object to receive the new properties.
  * @param {Object} source The object whose properties will be duplicated.
  **/
-vs.util.extend = (Object.defineProperty)?_extend_api2:_extend_api1;
+const extend = (Object.defineProperty)?_extend_api2:_extend_api1;
 
 /**
  * Extends a the prototype of a object
@@ -267,7 +199,7 @@ var extendClass = function (obj, extension)
       var proto = obj.prototype;
       obj.prototype = new extension ();
 
-      util.extend (obj.prototype, proto);
+      extend (obj.prototype, proto);
     }
 
     if (!obj.__properties__) obj.__properties__ = [];
@@ -296,8 +228,6 @@ function free (obj)
   if (!obj) { return; }
   if (obj._free) { obj._free (); }
   if (obj.destructor) { obj.destructor (); }
-  delete (obj);
-  obj = null;
 }
 
 /**
@@ -458,7 +388,7 @@ function defineClassProperty (the_class, prop_name, desc)
   if (!the_class.prototype) {
     throw ("defineClassProperty on a Class without prototype");
   }
-  util.defineProperty (the_class.prototype, prop_name, desc);
+  defineProperty (the_class.prototype, prop_name, desc);
   if (desc.enumerable != false) the_class.__properties__.push (prop_name);
 }
 
@@ -1252,7 +1182,7 @@ function getElementAbsolutePosition (element, force)
   if (!force && element.getBoundingClientRect)
   {
     var rec = element.getBoundingClientRect ();
-    if (rec) { return new vs.Point (rec.left, rec.top); }
+    if (rec) { return new Point (rec.left, rec.top); }
   }
   var
     x = 0, y = 0;
@@ -1287,7 +1217,7 @@ function getElementAbsolutePosition (element, force)
       parent = parent.offsetParent;
     }
   }
-  return new vs.Point (x, y);
+  return new Point (x, y);
 }
 
 /**
@@ -1361,7 +1291,7 @@ function setElementVisibility (elem, v)
   if (!elem) { return; }
   var elementStyle = elem.style;
 
-  if (elementStyle || util.isString (elem.innerHTML))
+  if (elementStyle || isString (elem.innerHTML))
   {
     if (v)
     {
@@ -1400,7 +1330,7 @@ function isElementVisible (elem)
   if (!elem) { return false; }
   var elementStyle = elem.style;
 
-  if (elementStyle || util.isString (elem.innerHTML))
+  if (elementStyle || isString (elem.innerHTML))
   {
     if (elementStyle.visibility === 'hidden') { return false; }
     else { return true; }
@@ -1473,11 +1403,11 @@ function setElementInnerText (elem, text)
 
   removeAllElementChild (elem); //... deroule
 
-  if (!util.isString (text))
+  if (!isString (text))
   {
     if (text === undefined) { text = ""; }
     else if (text === null) { text = ""; }
-    else if (util.isNumber (text)) { text = "" + text; }
+    else if (isNumber (text)) { text = "" + text; }
     else if (text.toString) { text = text.toString (); }
     else { text = ""; }
   }
@@ -1621,7 +1551,7 @@ function getElementMatrixTransform (elem) {
   else if (css.msTransform) transformMatrix = css.msTransform;
   else if (css.MozTransform) transformMatrix = css.MozTransform;
   
-  if (transformMatrix) return new vs.CSSMatrix (transformMatrix);
+  if (transformMatrix) return new CSSMatrix (transformMatrix);
 }
 
 /**
@@ -1637,7 +1567,7 @@ function setElementTransformOrigin (elem, value)
 {
   if (elem && elem.style)
   {
-    elem.style ['-' + vs.CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
+    elem.style ['-' + CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
   }
   else console.warn ("setElementTransformOrigin, elem null or without style");
 }
@@ -1705,7 +1635,7 @@ Array.prototype.indexOf:_findItem;
  */
 Array.prototype.remove = function (from, to)
 {
-  if ((typeof(from) === "object") || util.isString (from))
+  if ((typeof(from) === "object") || isString (from))
   {
     var i = 0;
     while (i < this.length)
@@ -1795,7 +1725,7 @@ function importFile (path, doc, clb, type, first)
     css_style.setAttribute ("type", "text/css");
     css_style.setAttribute ("href", path);
     css_style.setAttribute ("media", "screen");
-    if (util.isFunction (clb))
+    if (isFunction (clb))
     {
       var count = 0;
 
@@ -1918,187 +1848,199 @@ function addCssRule (selector, rule)
  */
 var SET_STYLE_OPTIMIZATION = true;
 
-/**
- *  Sets the active stylesheet for the HTML document according to the specified
- *  title.
- *
- *  @memberOf vs.util
- *
- * @param {String} title
- */
-var setActiveStyleSheet = function (title)
-{
-  var i = 0, stylesheets = document.getElementsByTagName ("link"),
-    stylesheet, info, id, app, size;
+// /**
+//  *  Sets the active stylesheet for the HTML document according to the specified
+//  *  title.
+//  *
+//  *  @memberOf vs.util
+//  *
+//  * @param {String} title
+//  */
+// var setActiveStyleSheet = function (title)
+// {
+//   var i = 0, stylesheets = document.getElementsByTagName ("link"),
+//     stylesheet, info, id, app, size;
 
-  var apps = vs.Application_applications;
+//   var apps = vs.Application_applications;
 
-  if (SET_STYLE_OPTIMIZATION)
-  {
-    if (apps) for (id in apps)
-    {
-      app = apps [id];
-      if (app.view) app.view.style.display = "none";
-    }
-  }
+//   if (SET_STYLE_OPTIMIZATION)
+//   {
+//     if (apps) for (id in apps)
+//     {
+//       app = apps [id];
+//       if (app.view) app.view.style.display = "none";
+//     }
+//   }
 
-  for (i = 0; i < stylesheets.length; i++)
-  {
-    stylesheet = stylesheets [i];
-    // If the stylesheet doesn't contain the title attribute, assume it's
-    // a persistent stylesheet and should not be disabled
-    if (!stylesheet.getAttribute ("title")) { continue; }
-    // All other stylesheets than the one specified by "title" should be
-    // disabled
-    if (stylesheet.getAttribute ("title") !== title)
-    {
-      stylesheet.setAttribute ("disabled", true);
-    } else
-    {
-      stylesheet.removeAttribute ("disabled");
-    }
-  }
+//   for (i = 0; i < stylesheets.length; i++)
+//   {
+//     stylesheet = stylesheets [i];
+//     // If the stylesheet doesn't contain the title attribute, assume it's
+//     // a persistent stylesheet and should not be disabled
+//     if (!stylesheet.getAttribute ("title")) { continue; }
+//     // All other stylesheets than the one specified by "title" should be
+//     // disabled
+//     if (stylesheet.getAttribute ("title") !== title)
+//     {
+//       stylesheet.setAttribute ("disabled", true);
+//     } else
+//     {
+//       stylesheet.removeAttribute ("disabled");
+//     }
+//   }
 
-  if (SET_STYLE_OPTIMIZATION)
-  {
-    if (apps) for (id in apps)
-    {
-      app = apps [id];
-      if (app.view) app.view.style.display = "block";
-    }
-  }
-}
+//   if (SET_STYLE_OPTIMIZATION)
+//   {
+//     if (apps) for (id in apps)
+//     {
+//       app = apps [id];
+//       if (app.view) app.view.style.display = "block";
+//     }
+//   }
+// }
 
-/**
- *  Preload GUI HTML template for the given component.
- *  <p>
- *  When the developer uses createAndAddComponent method, the system will
- *  load the HTML GUI template associated to the component to create.
- *  This process can take times.<br>
- *  In order to minimize the latency, this class method allows to preload all
- *  data related to a component.<br>
- *  This method should ne call when the application start.
- *
- *  @example
- *  vs.util.preloadTemplate ('GUICompOne');
- *  vs.util.preloadTemplate ('GUICompTwo');
- *  ...
- *  myObject.createAndAddComponent ('GUICompOne', conf, 'children');
- *
- *  @memberOf vs.util
- *
- * @param {String} comp_name The GUI component name
- */
-function preloadTemplate (comp_name)
-{
-  var path = comp_name + '.xhtml', xmlRequest;
+// /**
+//  *  Preload GUI HTML template for the given component.
+//  *  <p>
+//  *  When the developer uses createAndAddComponent method, the system will
+//  *  load the HTML GUI template associated to the component to create.
+//  *  This process can take times.<br>
+//  *  In order to minimize the latency, this class method allows to preload all
+//  *  data related to a component.<br>
+//  *  This method should ne call when the application start.
+//  *
+//  *  @example
+//  *  vs.util.preloadTemplate ('GUICompOne');
+//  *  vs.util.preloadTemplate ('GUICompTwo');
+//  *  ...
+//  *  myObject.createAndAddComponent ('GUICompOne', conf, 'children');
+//  *
+//  *  @memberOf vs.util
+//  *
+//  * @param {String} comp_name The GUI component name
+//  */
+// function preloadTemplate (comp_name)
+// {
+//   var path = comp_name + '.xhtml', xmlRequest;
 
-  if (vs.ui && vs.ui.View && vs.ui.View.__comp_templates [path]) { return; }
+//   if (vs.ui && vs.ui.View && vs.ui.View.__comp_templates [path]) { return; }
 
-  xmlRequest = new XMLHttpRequest ();
-  xmlRequest.open ("GET", path, false);
-  xmlRequest.send (null);
+//   xmlRequest = new XMLHttpRequest ();
+//   xmlRequest.open ("GET", path, false);
+//   xmlRequest.send (null);
 
-  if (xmlRequest.readyState === 4)
-  {
-    if (xmlRequest.status === 200 || xmlRequest.status === 0)
-    {
-      data = xmlRequest.responseText;
-      if (vs.ui && vs.ui.View) vs.ui.View.__comp_templates [path] = data;
-    }
-    else
-    {
-      console.error
-        ("Template file for component '" + comp_name + "' unfound");
-      return;
-    }
-  }
-  else
-  {
-    console.error
-      ("Pb when load the component '" + comp_name + "' template");
-    return;
-  }
-  xmlRequest = null;
-}
+//   if (xmlRequest.readyState === 4)
+//   {
+//     if (xmlRequest.status === 200 || xmlRequest.status === 0)
+//     {
+//       data = xmlRequest.responseText;
+//       if (vs.ui && vs.ui.View) vs.ui.View.__comp_templates [path] = data;
+//     }
+//     else
+//     {
+//       console.error
+//         ("Template file for component '" + comp_name + "' unfound");
+//       return;
+//     }
+//   }
+//   else
+//   {
+//     console.error
+//       ("Pb when load the component '" + comp_name + "' template");
+//     return;
+//   }
+//   xmlRequest = null;
+// }
+
+const defineProperty =
+  (Object.defineProperty)? _defineProperty_api2 : _defineProperty_api1;
+
+const getBoundingClientRect =
+  (vsTestElem && vsTestElem.getBoundingClientRect) ?
+  _getBoundingClientRect_api2: _getBoundingClientRect_api1;
 
 /********************************************************************
                          export
 *********************************************************************/
 
-util.extend (util, {
-  vsTestElem:              vsTestElem,
-  vsTestStyle:             vsTestStyle,
+export {
+  vsTestElem,
+  vsTestStyle,
+  clearImmediate,
+  setImmediate,
+  requestAnimationFrame,
+  cancelRequestAnimationFrame,
+
+  CSS_VENDOR,
+  SUPPORT_3D_TRANSFORM,
+  SUPPORT_CSS_TRANSFORM,
 
   // Class functions
-  extendClass:             extendClass,
-  defineProperty:
-        (Object.defineProperty)?_defineProperty_api2:_defineProperty_api1,
-  defineClassProperty:     defineClassProperty,
-  defineClassProperties:   defineClassProperties,
-  clone:                   clone,
-  free:                    free,
+  extendClass,
+  defineProperty,
+  defineClassProperty,
+  defineClassProperties,
+  clone,
+  free,
 
   // JSON functions
-  toJSON:                  toJSON,
+  toJSON,
 
   // testing functions
-  isElement:               isElement,
-  isArray:                 isArray,
-  isFunction:              isFunction,
-  isString:                isString,
-  isNumber:                isNumber,
-  isObject:                isObject,
-  isUndefined:             isUndefined,
+  isElement,
+  isArray,
+  isFunction,
+  isString,
+  isNumber,
+  isObject,
+  isUndefined,
 
   // element class
-  hasClassName:    hasClassName,
-  addClassName:    addClassName,
-  removeClassName: removeClassName,
-  toggleClassName: toggleClassName,
+  hasClassName,
+  addClassName,
+  removeClassName,
+  toggleClassName,
 
   // string
-  htmlEncode:      htmlEncode,
-  strip:           strip,
-  camelize:        camelize,
-  capitalize:      capitalize,
-  underscore:      underscore,
-  parseJSON:       parseJSON,
+  htmlEncode,
+  strip,
+  camelize,
+  capitalize,
+  underscore,
+  parseJSON,
 
   // element style
-  addCssRule:                 addCssRule,
-  addCssRules:                addCssRules,
-  getElementHeight:           getElementHeight,
-  getElementWidth:            getElementWidth,
-  getElementDimensions:       getElementDimensions,
-  getElementStyle:            getElementStyle,
-  setElementStyle:            setElementStyle,
-  setElementOpacity:          setElementOpacity,
-  getElementOpacity:          getElementOpacity,
-  getElementAbsolutePosition: getElementAbsolutePosition,
-  setElementPos:              setElementPos,
-  setElementSize:             setElementSize,
-  setElementVisibility:       setElementVisibility,
-  isElementVisible:           isElementVisible,
-  removeAllElementChild:      removeAllElementChild,
-  safeInnerHTML:              safeInnerHTML,
-  setElementInnerText:        setElementInnerText,
-  setElementTransform:        setElementTransform,
-  getElementTransform:        getElementTransform,
-  getElementMatrixTransform:  getElementMatrixTransform,
-  setElementTransformOrigin:  setElementTransformOrigin,
-  getBoundingClientRect:
-    (vsTestElem && vsTestElem.getBoundingClientRect)?
-    _getBoundingClientRect_api2:_getBoundingClientRect_api1,
+  addCssRule,
+  addCssRules,
+  getElementHeight,
+  getElementWidth,
+  getElementDimensions,
+  getElementStyle,
+  setElementStyle,
+  setElementOpacity,
+  getElementOpacity,
+  getElementAbsolutePosition,
+  setElementPos,
+  setElementSize,
+  setElementVisibility,
+  isElementVisible,
+  removeAllElementChild,
+  safeInnerHTML,
+  setElementInnerText,
+  setElementTransform,
+  getElementTransform,
+  getElementMatrixTransform,
+  setElementTransformOrigin,
+  getBoundingClientRect,
 
   // other
-  importFile:           importFile,
-  setActiveStyleSheet:  setActiveStyleSheet,
-  preloadTemplate:      preloadTemplate,
-  __date_reg_exp:       __date_reg_exp,
-  _findItem:            _findItem, // export only for testing purpose
-  _defineProperty_api1: _defineProperty_api1, // export only for testing purpose
-  _defineProperty_api2: _defineProperty_api2, // export only for testing purpose
-  _extend_api1:         _extend_api1, // export only for testing purpose
-  _extend_api2:         _extend_api2 // export only for testing purpose
-});
+  importFile,
+  // setActiveStyleSheet,
+  // preloadTemplate,
+  __date_reg_exp,
+  _findItem, // export only for testing purpose
+  _defineProperty_api1, // export only for testing purpose
+  _defineProperty_api2, // export only for testing purpose
+  _extend_api1, // export only for testing purpose
+  _extend_api2 // export only for testing purpose
+};
