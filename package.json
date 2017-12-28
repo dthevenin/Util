@@ -2,7 +2,7 @@
   "name": "vs_util",
   "version": "1.0.0",
   "description": "Set of utilities functions we need for developing web app.",
-  "main": "./lib/index.js",
+  "main": "./lib/vs_utils.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "repository": "https://github.com/dthevenin/Util.git",
