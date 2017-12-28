@@ -17,7 +17,6 @@
     "prepublish": "npm run clean && npm run build"
   },
   "files": [
-    "dist",
     "lib",
     "src",
     "es"
