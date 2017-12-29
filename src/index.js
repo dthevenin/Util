@@ -1,6 +1,7 @@
 export { clone } from './utils/helpers';
 export * from './utils/is';
 export { } from './utils/Array';
-export * from './utils/Point';
-export * from './utils/CSSMatrix';
+import Point from './utils/Point';
+import CSSMatrix from './utils/CSSMatrix';
+export { Point, CSSMatrix };
 export * from './utils/Utils';
