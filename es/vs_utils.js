@@ -1140,7 +1140,7 @@ CSSMatrix.prototype.getMatrix3dStr = function () {
 class Point {
   constructor(x, y) {
     this.x = isNumber$1(x) ? x : 0;
-    this.x = isNumber$1(x) ? x : 0;
+    this.y = isNumber$1(y) ? y : 0;
   }
 
   /*****************************************************************
@@ -2590,4 +2590,4 @@ const getBoundingClientRect =
   (vsTestElem && vsTestElem.getBoundingClientRect) ?
   _getBoundingClientRect_api2: _getBoundingClientRect_api1;
 
-export { clone, isElement$1 as isElement, isArray$1 as isArray, isFunction$1 as isFunction, isString$1 as isString, isNumber$1 as isNumber, isObject, isUndefined$1 as isUndefined, vsTestElem, vsTestStyle, clearImmediate, setImmediate, requestAnimationFrame, cancelRequestAnimationFrame, CSS_VENDOR, SUPPORT_3D_TRANSFORM, SUPPORT_CSS_TRANSFORM, extendClass, defineProperty, defineClassProperty, defineClassProperties, free, hasClassName, addClassName, removeClassName, toggleClassName, addCssRule, addCssRules, getElementHeight, getElementWidth, getElementDimensions, getElementStyle, setElementStyle, setElementOpacity, getElementOpacity, getElementAbsolutePosition, setElementPos, setElementSize, setElementVisibility, isElementVisible, removeAllElementChild, safeInnerHTML, setElementInnerText, setElementTransform, getElementTransform, getElementMatrixTransform, setElementTransformOrigin, getBoundingClientRect, importFile };
+export { Point, CSSMatrix, clone, isElement$1 as isElement, isArray$1 as isArray, isFunction$1 as isFunction, isString$1 as isString, isNumber$1 as isNumber, isObject, isUndefined$1 as isUndefined, vsTestElem, vsTestStyle, clearImmediate, setImmediate, requestAnimationFrame, cancelRequestAnimationFrame, CSS_VENDOR, SUPPORT_3D_TRANSFORM, SUPPORT_CSS_TRANSFORM, extendClass, defineProperty, defineClassProperty, defineClassProperties, free, extend, hasClassName, addClassName, removeClassName, toggleClassName, addCssRule, addCssRules, getElementHeight, getElementWidth, getElementDimensions, getElementStyle, setElementStyle, setElementOpacity, getElementOpacity, getElementAbsolutePosition, setElementPos, setElementSize, setElementVisibility, isElementVisible, removeAllElementChild, safeInnerHTML, setElementInnerText, setElementTransform, getElementTransform, getElementMatrixTransform, setElementTransformOrigin, getBoundingClientRect, importFile };

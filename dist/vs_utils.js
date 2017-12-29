@@ -1143,7 +1143,7 @@ CSSMatrix.prototype.getMatrix3dStr = function () {
 class Point {
   constructor(x, y) {
     this.x = isNumber$1(x) ? x : 0;
-    this.x = isNumber$1(x) ? x : 0;
+    this.y = isNumber$1(y) ? y : 0;
   }
 
   /*****************************************************************
@@ -2571,6 +2571,8 @@ const getBoundingClientRect =
   (vsTestElem && vsTestElem.getBoundingClientRect) ?
   _getBoundingClientRect_api2: _getBoundingClientRect_api1;
 
+exports.Point = Point;
+exports.CSSMatrix = CSSMatrix;
 exports.clone = clone;
 exports.isElement = isElement$1;
 exports.isArray = isArray$1;
@@ -2591,6 +2593,7 @@ exports.defineProperty = defineProperty;
 exports.defineClassProperty = defineClassProperty;
 exports.defineClassProperties = defineClassProperties;
 exports.free = free;
+exports.extend = extend;
 exports.hasClassName = hasClassName;
 exports.addClassName = addClassName;
 exports.removeClassName = removeClassName;
