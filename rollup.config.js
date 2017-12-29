@@ -1,16 +1,26 @@
-const env = process.env.NODE_ENV
-
-const config = {
-  entry: 'src/index.js',
+export default {
+  input: 'src/index.js',
   external: [ ],
-  globals: { },
-  format: 'amd',
-  moduleName: 'VSUtils',
+  output: [
+    {
+      file: './dist/vs_utils.js',
+      name: 'vs_utils',
+      globals: {},
+      format: 'iife',
+    },
+    {
+      file: './es/vs_utils.js',
+      name: 'vs_utils',
+      globals: {},
+      format: 'es',
+    },
+    {
+      file: './lib/vs_utils.js',
+      name: 'vs_utils',
+      globals: {},
+      format: 'amd'
+    }
+  ],
   plugins: [
   ]
-}
-
-if (env === 'production') {
-}
-
-export default config
+};

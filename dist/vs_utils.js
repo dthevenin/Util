@@ -1,3 +1,120 @@
+var vs_utils = (function (exports) {
+'use strict';
+
+/********************************************************************
+                    Object management
+*********************************************************************/
+
+/**
+ * @private
+ * @const
+ */
+/**
+ * @private
+ * @const
+ */
+const BOOLEAN_TYPE = 'Boolean';
+
+/**
+ * @private
+ * @const
+ */
+const NUMBER_TYPE = 'Number';
+
+/**
+ * @private
+ * @const
+ */
+const STRING_TYPE = 'String';
+
+/**
+ * @private
+ * @const
+ */
+const OBJECT_TYPE = 'Object';
+
+/**
+ * @private
+ * @const
+ */
+const BOOLEAN_CLASS = '[object Boolean]';
+
+/**
+ * @private
+ * @const
+ */
+const NUMBER_CLASS = '[object Number]';
+
+/**
+ * @private
+ * @const
+ */
+const STRING_CLASS = '[object String]';
+
+/**
+ * @private
+ * @const
+ */
+const ARRAY_CLASS = '[object Array]';
+
+/**
+ * @private
+ * @const
+ */
+const OBJECT_CLASS = '[object Object]';
+
+/********************************************************************
+                    Object management
+*********************************************************************/
+
+
+const _toString = Object.prototype.toString;
+
+/**
+ * @private
+ */
+function clone (object)
+{
+  var destination;
+
+  switch (object)
+  {
+    case null: return null;
+    case undefined: return undefined;
+  }
+  
+  if (object.clone) return object.clone ();
+
+  switch (_toString.call (object))
+  {
+    case OBJECT_CLASS:
+    case OBJECT_TYPE:
+      destination = {};
+      for (var property in object)
+      {
+        destination[property] = clone (object [property]);
+      }
+      return destination;
+
+    case ARRAY_CLASS: // should not occur because of Array.clone
+      destination = [];
+      for (var i = 0; i < object.length; i++)
+      {
+        destination [i] = clone (object [i]);
+      }
+      return destination;
+
+    case BOOLEAN_TYPE:
+    case NUMBER_TYPE:
+    case STRING_TYPE:
+    case BOOLEAN_CLASS:
+    case NUMBER_CLASS:
+    case STRING_CLASS:
+    default:
+      return object;
+  }
+}
+
 /**
   Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and
   contributors. All rights reserved
@@ -16,8 +133,1062 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Point from './Point';
-import CSSMatrix from './CSSMatrix';
+/********************************************************************
+                    Testing methods
+*********************************************************************/
+
+/**
+ * @private
+ **/
+var _toString$1 = Object.prototype.toString;
+
+/**
+ *  Returns `true` if `object` is a DOM node of type 1; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isElement(new Element('div'));
+ *  //-> true
+ *
+ *  vs.util.isElement(document.createElement('div'));
+ *  //-> true
+ *
+ *  vs.util.isElement(document.createTextNode('foo'));
+ *  //-> false
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isElement$1 (object)
+{
+  return !!(object && object.nodeType === 1);
+}
+
+/**
+ *  Returns `true` if `object` is an [[Array]]; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isArray([]);
+ *  //-> true
+ *
+ *  vs.util.isArray({ });
+ *  //-> false
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+var isArray$1 = Array.isArray ||
+  function (object) { return _toString$1.call (object) === ARRAY_CLASS;};
+
+/**
+ *  Returns `true` if `object` is an Function; `false` otherwise.
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isFunction$1 (object)
+{
+  return typeof object === "function";
+}
+
+/**
+ *  Returns `true` if `object` is an String; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isString ("qwe");
+ *  //-> true
+ *
+ *  vs.util.isString (123);
+ *  //-> false
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isString$1 (object)
+{
+  return _toString$1.call (object) === STRING_CLASS;
+}
+
+/**
+ *  Returns `true` if `object` is an Number; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isNumber (123);
+ *  //-> true
+ *
+ *  vs.util.isNumber (1.23);
+ *  //-> true
+ *
+ *  vs.util.isNumber ("123");
+ *  //-> false
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isNumber$1 (object)
+{
+  return (typeof object === 'number' && isFinite(object)) ||
+      object instanceof Number;
+}
+
+/**
+ *  Returns `true` if `object` is an "pure" Object; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isObject (123);
+ *  //-> false
+ *
+ *  vs.util.isObject ([]);
+ *  //-> false
+ *
+ *  vs.util.isObject ({});
+ *  //-> true
+ *
+ *  vs.util.isObject (document);
+ *  //-> false // YEP !
+ *
+ *  vs.util.isObject (vs.util);
+ *  //-> true
+ *
+ *  vs.util.isObject (new Date);
+ *  //-> false // YEP !
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isObject (object) {
+  try {
+    return (Object.getPrototypeOf (object) === Object.prototype);
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ *  Returns `true` if `object` is of type `undefined`; `false` otherwise.
+ *
+ *  @example
+ *
+ *  vs.util.isUndefined ();
+ *  //-> true
+ *
+ *  vs.util.isUndefined (undefined);
+ *  //-> true
+ *
+ *  vs.util.isUndefined (null);
+ *  //-> false
+ *
+ *  vs.util.isUndefined (0);
+ *  //-> false
+ *
+ *  @memberOf vs.util
+ *
+ * @param {Object} object The object to test.
+ **/
+function isUndefined$1 (object)
+{
+  return typeof object === "undefined";
+}
+
+/********************************************************************
+                    Array extension
+*********************************************************************/
+
+/**
+ * Removes the elements in the specified interval of this Array.<br/>
+ * Shifts any subsequent elements to the left (subtracts one from their indices).<br/>
+ * This method extends the JavaScript Array prototype.
+ * By John Resig (MIT Licensed)
+ *
+ * @param {int} from Index of the first element to be removed
+ * @param {int} to Index of the last element to be removed
+ */
+Array.prototype._remove = function (from, to)
+{
+  var rest = this.slice ((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply (this, rest);
+};
+
+/**
+ * @private
+ */
+var _findItem = function (obj, from)
+{
+  var len = this.length;
+
+  var from = from?from:0;
+  from = (from < 0)? 0: from;
+
+  while (from < len)
+  {
+    if (this [from] === obj) { return from; }
+    from++;
+  }
+  return -1;
+};
+
+/**
+ *  Find an element into this Array.
+ *
+ * @param {Object} obj Element to locate in the array
+ * @param {number} fromIndex The index at which to begin the search.
+ *    Defaults to 0, i.e. the whole array will be searched.
+ *    If the index is greater than or equal to the length of the
+ *    array, -1 is returned
+ * @return {int} the Index of the element. Return -1 if unfound.
+ */
+Array.prototype.findItem = Array.prototype.indexOf?
+Array.prototype.indexOf:_findItem;
+
+/**
+ * Removes the elements in the specified interval of this Array.<br/>
+ * Shifts any subsequent elements to the left (subtracts one from their indices).<br/>
+ * This method extends the JavaScript Array prototype.
+ *
+ * @param {int} from Index of the first element to be removed
+ * @param {int} to Index of the last element to be removed
+ * @return {Array} the modified array
+ */
+Array.prototype.remove = function (from, to)
+{
+  if ((typeof(from) === "object") || isString$1 (from))
+  {
+    var i = 0;
+    while (i < this.length)
+    {
+      if (this[i] === from) { this._remove (i); }
+      else { i++; }
+    }
+  }
+  else { this._remove (from, to); }
+  return this;
+};
+
+/**
+ * Removes all elements of this Array.<br/>
+ *
+ * @return {Array} the modified array
+ */
+Array.prototype.removeAll = function ()
+{
+  while (this.length > 0) { this._remove (0); }
+  return this;
+};
+
+/**
+ * Return a copy of the array
+ *
+ * @return {Array} the modified array
+ */
+Array.prototype.clone = function ()
+{
+  var destination = [];
+  for (var i = 0; i < this.length; i++)
+  {
+    destination [i] = clone (this [i]);
+  }
+  return destination;
+};
+
+/**
+ *  class FirminCSSMatrix
+ *
+ *  The [[FirminCSSMatrix]] class is a concrete implementation of the
+ *  `CSSMatrix` interface defined in the [CSS 2D Transforms][2d] and
+ *  [CSS 3D Transforms][3d] Module specifications.
+ *
+ *  [2d]: http://www.w3.org/TR/css3-2d-transforms/
+ *  [3d]: http://www.w3.org/TR/css3-3d-transforms/
+ *
+ *  The implementation was largely copied from the `WebKitCSSMatrix` class, and
+ *  the supparting maths libraries in the [WebKit][webkit] project. This is one
+ *  reason why much of the code looks more like C++ than JavaScript.
+ *
+ *  [webkit]: http://webkit.org/
+ *
+ *  Its API is a superset of that provided by `WebKitCSSMatrix`, largely
+ *  because various pieces of supporting code have been added as instance
+ *  methods rather than pollute the global namespace. Examples of these include
+ *  [[FirminCSSMatrix#isAffine]], [[FirminCSSMatrix#isIdentityOrTranslation]]
+ *  and [[FirminCSSMatrix#adjoint]].
+ **/
+
+/**
+ *  new FirminCSSMatrix(domstr)
+ *  - domstr (String): a string representation of a 2D or 3D transform matrix
+ *    in the form given by the CSS transform property, i.e. just like the
+ *    output from [[FirminCSSMatrix#toString]].
+ **/
+var FirminCSSMatrix = function(domstr) {
+  this.m11 = this.m22 = this.m33 = this.m44 = 1;
+
+         this.m12 = this.m13 = this.m14 =
+  this.m21 =        this.m23 = this.m24 =
+  this.m31 = this.m32 =      this.m34 =
+  this.m41 = this.m42 = this.m43        = 0;
+
+  if (typeof domstr == "string") {
+    this.setMatrixValue(domstr);
+  }
+};
+
+/**
+ *  FirminCSSMatrix.displayName = "FirminCSSMatrix"
+ **/
+FirminCSSMatrix.displayName = "FirminCSSMatrix";
+
+/**
+ *  FirminCSSMatrix.degreesToRadians(angle) -> Number
+ *  - angle (Number): an angle in degrees.
+ *
+ *  Converts angles in degrees, which are used by the external API, to angles
+ *  in radians used in internal calculations.
+ **/
+FirminCSSMatrix.degreesToRadians = function(angle) {
+  return angle * Math.PI / 180;
+};
+
+/**
+ *  FirminCSSMatrix.determinant2x2(a, b, c, d) -> Number
+ *  - a (Number): top-left value of the matrix.
+ *  - b (Number): top-right value of the matrix.
+ *  - c (Number): bottom-left value of the matrix.
+ *  - d (Number): bottom-right value of the matrix.
+ *
+ *  Calculates the determinant of a 2x2 matrix.
+ **/
+FirminCSSMatrix.determinant2x2 = function(a, b, c, d) {
+  return a * d - b * c;
+};
+
+/**
+ *  FirminCSSMatrix.determinant3x3(matrix) -> Number
+ *  - a1 (Number): matrix value in position [1, 1].
+ *  - a2 (Number): matrix value in position [1, 2].
+ *  - a3 (Number): matrix value in position [1, 3].
+ *  - b1 (Number): matrix value in position [2, 1].
+ *  - b2 (Number): matrix value in position [2, 2].
+ *  - b3 (Number): matrix value in position [2, 3].
+ *  - c1 (Number): matrix value in position [3, 1].
+ *  - c2 (Number): matrix value in position [3, 2].
+ *  - c3 (Number): matrix value in position [3, 3].
+ *
+ *  Calculates the determinant of a 3x3 matrix.
+ **/
+FirminCSSMatrix.determinant3x3 = function(a1, a2, a3, b1, b2, b3, c1, c2, c3) {
+  var determinant2x2 = FirminCSSMatrix.determinant2x2;
+  return a1 * determinant2x2(b2, b3, c2, c3) -
+       b1 * determinant2x2(a2, a3, c2, c3) +
+       c1 * determinant2x2(a2, a3, b2, b3);
+};
+
+/**
+ *  FirminCSSMatrix.determinant4x4(matrix) -> Number
+ *  - matrix (FirminCSSMatrix): the matrix to calculate the determinant of.
+ *
+ *  Calculates the determinant of a 4x4 matrix.
+ **/
+FirminCSSMatrix.determinant4x4 = function(m) {
+  var determinant3x3 = FirminCSSMatrix.determinant3x3,
+
+  // Assign to individual variable names to aid selecting correct elements
+  a1 = m.m11, b1 = m.m21, c1 = m.m31, d1 = m.m41,
+  a2 = m.m12, b2 = m.m22, c2 = m.m32, d2 = m.m42,
+  a3 = m.m13, b3 = m.m23, c3 = m.m33, d3 = m.m43,
+  a4 = m.m14, b4 = m.m24, c4 = m.m34, d4 = m.m44;
+
+  return a1 * determinant3x3(b2, b3, b4, c2, c3, c4, d2, d3, d4) -
+       b1 * determinant3x3(a2, a3, a4, c2, c3, c4, d2, d3, d4) +
+       c1 * determinant3x3(a2, a3, a4, b2, b3, b4, d2, d3, d4) -
+       d1 * determinant3x3(a2, a3, a4, b2, b3, b4, c2, c3, c4);
+};
+
+/**
+ *  FirminCSSMatrix#a -> Number
+ *  The first 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#b -> Number
+ *  The second 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#c -> Number
+ *  The third 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#d -> Number
+ *  The fourth 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#e -> Number
+ *  The fifth 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#f -> Number
+ *  The sixth 2D vector value.
+ **/
+
+/**
+ *  FirminCSSMatrix#m11 -> Number
+ *  The 3D matrix value in the first row and first column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m12 -> Number
+ *  The 3D matrix value in the first row and second column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m13 -> Number
+ *  The 3D matrix value in the first row and third column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m14 -> Number
+ *  The 3D matrix value in the first row and fourth column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m21 -> Number
+ *  The 3D matrix value in the second row and first column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m22 -> Number
+ *  The 3D matrix value in the second row and second column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m23 -> Number
+ *  The 3D matrix value in the second row and third column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m24 -> Number
+ *  The 3D matrix value in the second row and fourth column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m31 -> Number
+ *  The 3D matrix value in the third row and first column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m32 -> Number
+ *  The 3D matrix value in the third row and second column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m33 -> Number
+ *  The 3D matrix value in the third row and third column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m34 -> Number
+ *  The 3D matrix value in the third row and fourth column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m41 -> Number
+ *  The 3D matrix value in the fourth row and first column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m42 -> Number
+ *  The 3D matrix value in the fourth row and second column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m43 -> Number
+ *  The 3D matrix value in the fourth row and third column.
+ **/
+
+/**
+ *  FirminCSSMatrix#m44 -> Number
+ *  The 3D matrix value in the fourth row and fourth column.
+ **/
+
+[["m11", "a"],
+ ["m12", "b"],
+ ["m21", "c"],
+ ["m22", "d"],
+ ["m41", "e"],
+ ["m42", "f"]].forEach(function(pair) {
+  var key3d = pair[0], key2d = pair[1];
+
+  Object.defineProperty(FirminCSSMatrix.prototype, key2d, {
+    set: function(val) {
+      this[key3d] = val;
+    },
+  
+    get: function() {
+      return this[key3d];
+    }
+  });
+});
+
+/**
+ *  FirminCSSMatrix#isAffine() -> Boolean
+ *
+ *  Determines whether the matrix is affine.
+ **/
+FirminCSSMatrix.prototype.isAffine = function() {
+  return this.m13 === 0 && this.m14 === 0 &&
+       this.m23 === 0 && this.m24 === 0 &&
+       this.m31 === 0 && this.m32 === 0 &&
+       this.m33 === 1 && this.m34 === 0 &&
+       this.m43 === 0 && this.m44 === 1;
+};
+
+/**
+ *  FirminCSSMatrix#multiply(otherMatrix) -> FirminCSSMatrix
+ *  - otherMatrix (FirminCSSMatrix): the matrix to multiply this one by.
+ *
+ *  Multiplies the matrix by a given matrix and returns the result.
+ **/
+FirminCSSMatrix.prototype.multiply = function(otherMatrix) {
+  var a = otherMatrix,
+    b = this,
+    c = new FirminCSSMatrix();
+
+  c.m11 = a.m11 * b.m11 + a.m12 * b.m21 + a.m13 * b.m31 + a.m14 * b.m41;
+  c.m12 = a.m11 * b.m12 + a.m12 * b.m22 + a.m13 * b.m32 + a.m14 * b.m42;
+  c.m13 = a.m11 * b.m13 + a.m12 * b.m23 + a.m13 * b.m33 + a.m14 * b.m43;
+  c.m14 = a.m11 * b.m14 + a.m12 * b.m24 + a.m13 * b.m34 + a.m14 * b.m44;
+
+  c.m21 = a.m21 * b.m11 + a.m22 * b.m21 + a.m23 * b.m31 + a.m24 * b.m41;
+  c.m22 = a.m21 * b.m12 + a.m22 * b.m22 + a.m23 * b.m32 + a.m24 * b.m42;
+  c.m23 = a.m21 * b.m13 + a.m22 * b.m23 + a.m23 * b.m33 + a.m24 * b.m43;
+  c.m24 = a.m21 * b.m14 + a.m22 * b.m24 + a.m23 * b.m34 + a.m24 * b.m44;
+
+  c.m31 = a.m31 * b.m11 + a.m32 * b.m21 + a.m33 * b.m31 + a.m34 * b.m41;
+  c.m32 = a.m31 * b.m12 + a.m32 * b.m22 + a.m33 * b.m32 + a.m34 * b.m42;
+  c.m33 = a.m31 * b.m13 + a.m32 * b.m23 + a.m33 * b.m33 + a.m34 * b.m43;
+  c.m34 = a.m31 * b.m14 + a.m32 * b.m24 + a.m33 * b.m34 + a.m34 * b.m44;
+
+  c.m41 = a.m41 * b.m11 + a.m42 * b.m21 + a.m43 * b.m31 + a.m44 * b.m41;
+  c.m42 = a.m41 * b.m12 + a.m42 * b.m22 + a.m43 * b.m32 + a.m44 * b.m42;
+  c.m43 = a.m41 * b.m13 + a.m42 * b.m23 + a.m43 * b.m33 + a.m44 * b.m43;
+  c.m44 = a.m41 * b.m14 + a.m42 * b.m24 + a.m43 * b.m34 + a.m44 * b.m44;
+
+  return c;
+};
+
+/**
+ *  FirminCSSMatrix#isIdentityOrTranslation() -> Boolean
+ *
+ *  Returns whether the matrix is the identity matrix or a translation matrix.
+ **/
+FirminCSSMatrix.prototype.isIdentityOrTranslation = function() {
+  var t = this;
+  return t.m11 === 1 && t.m12 === 0 && t.m13 === 0 && t.m14 === 0 &&
+       t.m21 === 0 && t.m22 === 1 && t.m23 === 0 && t.m24 === 0 &&
+       t.m31 === 0 && t.m31 === 0 && t.m33 === 1 && t.m34 === 0 &&
+  /* m41, m42 and m43 are the translation points */ t.m44 === 1;
+};
+
+/**
+ *  FirminCSSMatrix#adjoint() -> FirminCSSMatrix
+ *
+ *  Returns the adjoint matrix.
+ **/
+FirminCSSMatrix.prototype.adjoint = function() {
+  var result = new FirminCSSMatrix(), t = this,
+    determinant3x3 = FirminCSSMatrix.determinant3x3,
+  
+    a1 = t.m11, b1 = t.m12, c1 = t.m13, d1 = t.m14,
+    a2 = t.m21, b2 = t.m22, c2 = t.m23, d2 = t.m24,
+    a3 = t.m31, b3 = t.m32, c3 = t.m33, d3 = t.m34,
+    a4 = t.m41, b4 = t.m42, c4 = t.m43, d4 = t.m44;
+
+  // Row column labeling reversed since we transpose rows & columns
+  result.m11 =  determinant3x3(b2, b3, b4, c2, c3, c4, d2, d3, d4);
+  result.m21 = -determinant3x3(a2, a3, a4, c2, c3, c4, d2, d3, d4);
+  result.m31 =  determinant3x3(a2, a3, a4, b2, b3, b4, d2, d3, d4);
+  result.m41 = -determinant3x3(a2, a3, a4, b2, b3, b4, c2, c3, c4);
+
+  result.m12 = -determinant3x3(b1, b3, b4, c1, c3, c4, d1, d3, d4);
+  result.m22 =  determinant3x3(a1, a3, a4, c1, c3, c4, d1, d3, d4);
+  result.m32 = -determinant3x3(a1, a3, a4, b1, b3, b4, d1, d3, d4);
+  result.m42 =  determinant3x3(a1, a3, a4, b1, b3, b4, c1, c3, c4);
+
+  result.m13 =  determinant3x3(b1, b2, b4, c1, c2, c4, d1, d2, d4);
+  result.m23 = -determinant3x3(a1, a2, a4, c1, c2, c4, d1, d2, d4);
+  result.m33 =  determinant3x3(a1, a2, a4, b1, b2, b4, d1, d2, d4);
+  result.m43 = -determinant3x3(a1, a2, a4, b1, b2, b4, c1, c2, c4);
+
+  result.m14 = -determinant3x3(b1, b2, b3, c1, c2, c3, d1, d2, d3);
+  result.m24 =  determinant3x3(a1, a2, a3, c1, c2, c3, d1, d2, d3);
+  result.m34 = -determinant3x3(a1, a2, a3, b1, b2, b3, d1, d2, d3);
+  result.m44 =  determinant3x3(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+
+  return result;
+};
+
+/**
+ *  FirminCSSMatrix#inverse() -> FirminCSSMatrix | null
+ *
+ *  If the matrix is invertible, returns its inverse, otherwise returns null.
+ **/
+FirminCSSMatrix.prototype.inverse = function() {
+  var inv, det, result, i, j;
+
+  if (this.isIdentityOrTranslation()) {
+    inv = new FirminCSSMatrix();
+  
+    if (!(this.m41 === 0 && this.m42 === 0 && this.m43 === 0)) {
+      inv.m41 = -this.m41;
+      inv.m42 = -this.m42;
+      inv.m43 = -this.m43;
+    }
+  
+    return inv;
+  }
+
+  // Calculate the adjoint matrix
+  result = this.adjoint();
+
+  // Calculate the 4x4 determinant
+  det = FirminCSSMatrix.determinant4x4(this);
+
+  // If the determinant is zero, then the inverse matrix is not unique
+  if (Math.abs(det) < 1e-8) return null;
+
+  // Scale the adjoint matrix to get the inverse
+  for (i = 1; i < 5; i++) {
+    for (j = 1; j < 5; j++) {
+      result[("m" + i) + j] /= det;
+    }
+  }
+
+  return result;
+};
+
+/**
+ *  FirminCSSMatrix#rotate(rotX, rotY, rotZ) -> FirminCSSMatrix
+ *  - rotX (Number): the rotation around the x axis.
+ *  - rotY (Number): the rotation around the y axis. If undefined, the x
+ *    component is used.
+ *  - rotZ (Number): the rotation around the z axis. If undefined, the x
+ *    component is used.
+ *
+ *  Returns the result of rotating the matrix by a given vector.
+ *
+ *  If only the first argument is provided, the matrix is only rotated about
+ *  the z axis.
+ **/
+FirminCSSMatrix.prototype.rotate = function(rx, ry, rz) {
+  var degreesToRadians = FirminCSSMatrix.degreesToRadians;
+
+  if (typeof rx != "number" || isNaN(rx)) rx = 0;
+
+  if ((typeof ry != "number" || isNaN(ry)) &&
+    (typeof rz != "number" || isNaN(rz))) {
+    rz = rx;
+    rx = 0;
+    ry = 0;
+  }
+
+  if (typeof ry != "number" || isNaN(ry)) ry = 0;
+  if (typeof rz != "number" || isNaN(rz)) rz = 0;
+
+  rx = degreesToRadians(rx);
+  ry = degreesToRadians(ry);
+  rz = degreesToRadians(rz);
+
+  var tx = new FirminCSSMatrix(),
+    ty = new FirminCSSMatrix(),
+    tz = new FirminCSSMatrix(),
+    sinA, cosA, sinA2;
+
+  rz /= 2;
+  sinA = Math.sin(rz);
+  cosA = Math.cos(rz);
+  sinA2 = sinA * sinA;
+
+  // Matrices are identity outside the assigned values
+  tz.m11 = tz.m22 = 1 - 2 * sinA2;
+  tz.m12 = tz.m21 = 2 * sinA * cosA;
+  tz.m21 *= -1;
+
+  ry /= 2;
+  sinA  = Math.sin(ry);
+  cosA  = Math.cos(ry);
+  sinA2 = sinA * sinA;
+
+  ty.m11 = ty.m33 = 1 - 2 * sinA2;
+  ty.m13 = ty.m31 = 2 * sinA * cosA;
+  ty.m13 *= -1;
+
+  rx /= 2;
+  sinA = Math.sin(rx);
+  cosA = Math.cos(rx);
+  sinA2 = sinA * sinA;
+
+  tx.m22 = tx.m33 = 1 - 2 * sinA2;
+  tx.m23 = tx.m32 = 2 * sinA * cosA;
+  tx.m32 *= -1;
+
+  return tz.multiply(ty).multiply(tx).multiply(this);
+};
+
+/**
+ *  FirminCSSMatrix#rotateAxisAngle(rotX, rotY, rotZ, angle) -> FirminCSSMatrix
+ *  - rotX (Number): the rotation around the x axis.
+ *  - rotY (Number): the rotation around the y axis. If undefined, the x
+ *    component is used.
+ *  - rotZ (Number): the rotation around the z axis. If undefined, the x
+ *    component is used.
+ *  - angle (Number): the angle of rotation about the axis vector, in degrees.
+ *
+ *  Returns the result of rotating the matrix around a given vector by a given
+ *  angle.
+ *
+ *  If the given vector is the origin vector then the matrix is rotated by the
+ *  given angle around the z axis.
+ **/
+FirminCSSMatrix.prototype.rotateAxisAngle = function(x, y, z, a) {
+  if (typeof x != "number" || isNaN(x)) x = 0;
+  if (typeof y != "number" || isNaN(y)) y = 0;
+  if (typeof z != "number" || isNaN(z)) z = 0;
+  if (typeof a != "number" || isNaN(a)) a = 0;
+  if (x === 0 && y === 0 && z === 0) z = 1;
+
+  var t = new FirminCSSMatrix(),
+    len = Math.sqrt(x * x + y * y + z * z),
+    cosA, sinA, sinA2, csA, x2, y2, z2;
+
+  a   = (FirminCSSMatrix.degreesToRadians(a) || 0) / 2;
+  cosA  = Math.cos(a);
+  sinA  = Math.sin(a);
+  sinA2 = sinA * sinA;
+
+  // Bad vector, use something sensible
+  if (len === 0) {
+    x = 0;
+    y = 0;
+    z = 1;
+  } else if (len !== 1) {
+    x /= len;
+    y /= len;
+    z /= len;
+  }
+
+  // Optimise cases where axis is along major axis
+  if (x === 1 && y === 0 && z === 0) {
+    t.m22 = t.m33 = 1 - 2 * sinA2;
+    t.m23 = t.m32 = 2 * cosA * sinA;
+    t.m32 *= -1;
+  } else if (x === 0 && y === 1 && z === 0) {
+    t.m11 = t.m33 = 1 - 2 * sinA2;
+    t.m13 = t.m31 = 2 * cosA * sinA;
+    t.m13 *= -1;
+  } else if (x === 0 && y === 0 && z === 1) {
+    t.m11 = t.m22 = 1 - 2 * sinA2;
+    t.m12 = t.m21 = 2 * cosA * sinA;
+    t.m21 *= -1;
+  } else {
+    csA = sinA * cosA;
+    x2  = x * x;
+    y2  = y * y;
+    z2  = z * z;
+  
+    t.m11 = 1 - 2 * (y2 + z2) * sinA2;
+    t.m12 = 2 * (x * y * sinA2 + z * csA);
+    t.m13 = 2 * (x * z * sinA2 - y * csA);
+    t.m21 = 2 * (y * x * sinA2 - z * csA);
+    t.m22 = 1 - 2 * (z2 + x2) * sinA2;
+    t.m23 = 2 * (y * z * sinA2 + x * csA);
+    t.m31 = 2 * (z * x * sinA2 + y * csA);
+    t.m32 = 2 * (z * y * sinA2 - x * csA);
+    t.m33 = 1 - 2 * (x2 + y2) * sinA2;
+  }
+
+  return this.multiply(t);
+};
+
+/**
+ *  FirminCSSMatrix#scale(scaleX, scaleY, scaleZ) -> FirminCSSMatrix
+ *  - scaleX (Number): the scaling factor in the x axis.
+ *  - scaleY (Number): the scaling factor in the y axis. If undefined, the x
+ *    component is used.
+ *  - scaleZ (Number): the scaling factor in the z axis. If undefined, 1 is
+ *    used.
+ *
+ *  Returns the result of scaling the matrix by a given vector.
+ **/
+FirminCSSMatrix.prototype.scale = function(scaleX, scaleY, scaleZ) {
+  var transform = new FirminCSSMatrix();
+
+  if (typeof scaleX != "number" || isNaN(scaleX)) scaleX = 1;
+  if (typeof scaleY != "number" || isNaN(scaleY)) scaleY = scaleX;
+  if (typeof scaleZ != "number" || isNaN(scaleZ)) scaleZ = 1;
+
+  transform.m11 = scaleX;
+  transform.m22 = scaleY;
+  transform.m33 = scaleZ;
+
+  return this.multiply(transform);
+};
+
+/**
+ *  FirminCSSMatrix#translate(x, y, z) -> FirminCSSMatrix
+ *  - x (Number): the x component of the vector.
+ *  - y (Number): the y component of the vector.
+ *  - z (Number): the z component of the vector. If undefined, 0 is used.
+ *
+ *  Returns the result of translating the matrix by a given vector.
+ **/
+FirminCSSMatrix.prototype.translate = function(x, y, z) {
+  var t = new FirminCSSMatrix();
+
+  if (typeof x != "number" || isNaN(x)) x = 0;
+  if (typeof y != "number" || isNaN(y)) y = 0;
+  if (typeof z != "number" || isNaN(z)) z = 0;
+
+  t.m41 = x;
+  t.m42 = y;
+  t.m43 = z;
+
+  return this.multiply(t);
+};
+
+/**
+ *  FirminCSSMatrix#setMatrixValue(domstr) -> undefined
+ *  - domstr (String): a string representation of a 2D or 3D transform matrix
+ *    in the form given by the CSS transform property, i.e. just like the
+ *    output from [[FirminCSSMatrix#toString]].
+ *
+ *  Sets the matrix values using a string representation, such as that produced
+ *  by the [[FirminCSSMatrix#toString]] method.
+ **/
+FirminCSSMatrix.prototype.setMatrixValue = function(domstr) {
+    domstr = domstr.trim();
+  var mstr   = domstr.match(/^matrix(3d)?\(\s*(.+)\s*\)$/),
+    is3d, chunks, len, points, i, chunk;
+
+  if (!mstr) return;
+
+  is3d   = !!mstr[1];
+  chunks = mstr[2].split(/\s*,\s*/);
+  len    = chunks.length;
+  points = new Array(len);
+
+  if ((is3d && len !== 16) || !(is3d || len === 6)) return;
+
+  for (i = 0; i < len; i++) {
+    chunk = chunks[i];
+    if (chunk.match(/^-?\d+(\.\d+)?$/)) {
+      points[i] = parseFloat(chunk);
+    } else return;
+  }
+
+  for (i = 0; i < len; i++) {
+    point = is3d ?
+      ("m" + (Math.floor(i / 4) + 1)) + (i % 4 + 1) :
+      String.fromCharCode(i + 97); // ASCII char 97 == 'a'
+    this[point] = points[i];
+  }
+};
+
+/**
+ *  FirminCSSMatrix#toString() -> String
+ *
+ *  Returns a string representation of the matrix.
+ **/
+FirminCSSMatrix.prototype.toString = function() {
+  var self = this, points, prefix;
+
+  if (this.isAffine()) {
+    prefix = "matrix(";
+    points = ["a", "b", "c", "d", "e", "f"];
+  } else {
+    prefix = "matrix3d(";
+    points = ["m11", "m12", "m13", "m14",
+          "m21", "m22", "m23", "m24",
+          "m31", "m32", "m33", "m34",
+          "m41", "m42", "m43", "m44"];
+  }
+
+  return prefix + points.map(function(p) {
+    return self[p].toFixed(6);
+  }).join(", ") + ")";
+};
+
+/**
+ * Represents a 4×4 homogeneous matrix that enables Document Object Model (DOM)
+ * scripting access to Cascading Style Sheets (CSS) 2-D and 3-D Transforms
+ * functionality.
+ * @public
+ * @memberOf vs
+ */
+const CSSMatrix = ('WebKitCSSMatrix' in window) ? window.WebKitCSSMatrix :
+  ('MSCSSMatrix' in window) ? window.MSCSSMatrix : FirminCSSMatrix;
+
+/**
+ *  CSSMatrix#isAffine() -> Boolean
+ *
+ *  Determines whether the matrix is affine.
+ **/
+if (!CSSMatrix.prototype.isAffine) {
+  CSSMatrix.prototype.isAffine = function () {
+    return !(this.m13 || this.m14 || this.m23 || this.m24 || this.m31 ||
+      this.m32 || this.m33 !== 1 && this.m34 || this.m43 || this.m44 !== 1);
+  };
+}
+
+var precision = 1000;
+
+/**
+ *  CSSMatrix#getMatrixStr() -> String
+ *  return affine transformation matrix
+ * @public
+ * @function
+ *
+ *  Returns a string representation of the 3d matrix.
+ **/
+CSSMatrix.prototype.getMatrixStr = function () {
+  var points = [
+    ~~(this.a * precision) / precision,
+    ~~(this.b * precision) / precision,
+    ~~(this.c * precision) / precision,
+    ~~(this.d * precision) / precision,
+    ~~(this.e * precision) / precision,
+    ~~(this.f * precision) / precision
+  ];
+  return "matrix(" + points.join(", ") + ")";
+};
+
+/**
+ *  CSSMatrix#getMatrix3dStr() -> String
+ * @public
+ * @function
+ *
+ *  Returns a string representation of the 3d matrix.
+ **/
+CSSMatrix.prototype.getMatrix3dStr = function () {
+  var points = [
+    ~~(this.m11 * precision) / precision,
+    ~~(this.m12 * precision) / precision,
+    ~~(this.m13 * precision) / precision,
+    ~~(this.m14 * precision) / precision,
+    ~~(this.m21 * precision) / precision,
+    ~~(this.m22 * precision) / precision,
+    ~~(this.m23 * precision) / precision,
+    ~~(this.m24 * precision) / precision,
+    ~~(this.m31 * precision) / precision,
+    ~~(this.m32 * precision) / precision,
+    ~~(this.m33 * precision) / precision,
+    ~~(this.m34 * precision) / precision,
+    ~~(this.m41 * precision) / precision,
+    ~~(this.m42 * precision) / precision,
+    ~~(this.m43 * precision) / precision,
+    ~~(this.m44 * precision) / precision
+  ];
+  return "matrix3d(" + points.join(", ") + ")";
+};
+
+/**
+  Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and 
+  contributors. All rights reserved
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ 
+ Use code from Canto.js Copyright 2010 Steven Levithan <stevenlevithan.com>
+*/
+
+/**
+ *  @class
+ *  Point is an (x, y) coordinate pair. 
+ *  When you use an Point object in matrix operations, the object is 
+ *  treated as a vector of the following form <x, y, 1>
+ *
+ * @author David Thevenin
+ *
+ *  @constructor
+ *  Main constructor
+ *
+ * @name Point
+ *
+ * @param {Number} the x-coordinate value.
+ * @param {Number} the y-coordinate value.
+*/
+class Point {
+  constructor(x, y) {
+    this.x = isNumber$1(x) ? x : 0;
+    this.x = isNumber$1(x) ? x : 0;
+  }
+
+  /*****************************************************************
+   *              
+   ****************************************************************/
+ 
+  /**
+   * Applies the given 2×3 matrix transformation on this Point object and 
+   * returns a new, transformed Point object.
+   *
+   * @name Point#matrixTransform
+   * @function
+   * @public
+   * @param {CSSMatrix} matrix he matrix
+   * @returns {Point} the matrix
+   */
+  matrixTransform(matrix) {
+    let matrixTmp = new CSSMatrix ();
+
+    matrixTmp = matrixTmp.translate (this.x, this.y, this.z || 0);
+    matrix = matrix.multiply (matrixTmp);
+
+    const result = new Point (matrix.m41, matrix.m42);
+
+    return result;
+  }
+}
+
+/**
+  Copyright (C) 2009-2012. David Thevenin, ViniSketch SARL (c), and
+  contributors. All rights reserved
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 /********************************************************************
 
@@ -35,23 +1206,21 @@ var vsTestElem = (document)?document.createElement ('vstestelem'):null;
  * @private
  */
 var vsTestStyle = (vsTestElem)?vsTestElem.style:null;
-let SUPPORT_3D_TRANSFORM = false;
-let CSS_VENDOR;
-
+exports.SUPPORT_3D_TRANSFORM = false;
 if (vsTestStyle)
 {
   if (vsTestStyle.webkitTransform !== undefined)
-    SUPPORT_3D_TRANSFORM =
+    exports.SUPPORT_3D_TRANSFORM =
       'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix ();
 
   else if (vsTestStyle.MozTransform !== undefined)
-    SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
+    exports.SUPPORT_3D_TRANSFORM = 'MozPerspective' in vsTestStyle;
 
   else if (vsTestStyle.msTransform !== undefined)
-    SUPPORT_3D_TRANSFORM =
+    exports.SUPPORT_3D_TRANSFORM =
      'MSCSSMatrix' in window && 'm11' in new MSCSSMatrix ();
 
-  CSS_VENDOR = (function () {
+  exports.CSS_VENDOR = (function () {
     var vendors = ['MozT', 'msT', 'OT', 'webkitT', 't'],
       transform,
       l = vendors.length;
@@ -65,7 +1234,7 @@ if (vsTestStyle)
   })();
 }
 
-const SUPPORT_CSS_TRANSFORM = (CSS_VENDOR !== null) ? true : false;
+const SUPPORT_CSS_TRANSFORM = (exports.CSS_VENDOR !== null) ? true : false;
 
 
 /**
@@ -127,11 +1296,11 @@ function _extend_api1 (destination, source)
 
     if (getter)
     {
-      destination.__defineGetter__ (property, getter)
+      destination.__defineGetter__ (property, getter);
     }
     if (setter)
     {
-      destination.__defineSetter__ (property, setter)
+      destination.__defineSetter__ (property, setter);
     }
     if (!getter && !setter)
     {
@@ -213,7 +1382,7 @@ var extendClass = function (obj, extension)
   {
     console.error (e.message ());
   }
-}
+};
 
 /**
  * Free a ViniSketch object
@@ -411,7 +1580,7 @@ function defineClassProperties (the_class, properties)
   var keys = Object.keys (properties), i = 0, l = keys.length, prop_name, desc;
   for (; i < l; i++)
   {
-    prop_name = keys [i]
+    prop_name = keys [i];
     desc = properties [prop_name];
     defineClassProperty (the_class, prop_name, desc);
   }
@@ -552,7 +1721,7 @@ function getElementHeight (elem)
   if (!isElement (elem)) return;
 
   return getElementDimensions (elem).height;
-};
+}
 
 /**
  *  Returns the width of `element`.<br/>
@@ -570,7 +1739,7 @@ function getElementWidth (elem)
   if (!isElement (elem)) return;
 
   return getElementDimensions (elem).width;
-};
+}
 
 /**
  *  Finds the computed width and height of `element` and returns them as
@@ -613,7 +1782,7 @@ function getElementDimensions (elem)
   els.visibility = originalVisibility;
 
   return {width: originalWidth, height: originalHeight};
-};
+}
 
 /**
  *  Returns the given CSS property value of `element`.<br/> The property can be
@@ -651,7 +1820,7 @@ function getElementStyle (elem, style)
   }
   if (style === 'opacity') { return value ? parseFloat (value) : 1.0; }
   return value === 'auto' ? null : value;
-};
+}
 
 /**
  *  Modifies `element`'s CSS style properties. Styles are passed as a hash of
@@ -692,7 +1861,7 @@ function setElementStyle (elem, styles)
           property] = styles[property];
     }
   }
-};
+}
 
 /**
  *  Sets the visual opacity of an element while working around inconsistencies
@@ -722,7 +1891,7 @@ function setElementOpacity (elem, value)
 
   elementStyle.opacity = (value === 1 || value === '') ? '' :
     (value < 0.00001) ? 0 : value;
-};
+}
 
 /**
  *  Returns the opacity of the element.
@@ -737,7 +1906,7 @@ function getElementOpacity (elem)
   if (!isElement (elem)) return;
 
   return getElementStyle (elem, 'opacity');
-};
+}
 
 /**
  * Compute the elements position in terms of the window viewport
@@ -758,9 +1927,7 @@ function getElementAbsolutePosition (element, force)
   }
   var
     x = 0, y = 0;
-    parent = element,
-    borderXOffset = 0,
-    borderYOffset = 0;
+    parent = element, borderXOffset = 0, borderYOffset = 0;
     
   while (parent)
   {
@@ -804,7 +1971,7 @@ function _getBoundingClientRect_api1 (e)
     left: rec.x,
     top: rec.y
   }
-};
+}
 
 /**
  * @private
@@ -812,7 +1979,7 @@ function _getBoundingClientRect_api1 (e)
 function _getBoundingClientRect_api2 (e)
 {
   return (e && e.getBoundingClientRect)?e.getBoundingClientRect ():null;
-};
+}
 
 /**
  *  Set the absolute element position.
@@ -934,7 +2101,7 @@ function removeAllElementChild (elem)
   {
     elem.removeChild (elem.firstChild);
   }
-};
+}
 
 /**
  *  Safe set inner HTML of a element
@@ -959,7 +2126,7 @@ function safeInnerHTML (elem, html_text)
     // if (window.toStaticHTML) html_text = window.toStaticHTML (html_text);
     elem.innerHTML = html_text;
   }
-};
+}
 
 /**
  *  Set inner Text content of a element
@@ -992,7 +2159,7 @@ function setElementInnerText (elem, text)
     elem.appendChild (document.createElement ('br'));
     elem.appendChild (document.createTextNode (lines [i]));
   }
-};
+}
 
 /**
  *@private
@@ -1062,45 +2229,25 @@ function _getElementTransform (elem)
   if (elem) return elem.style.transform;
 }
 
-/**
- *  Set the CSS transformation to a element
- *
- *  @memberOf vs.util
- *
- * @param {Element} elem The element
- * @param {String} transform css transformations
- **/
-var setElementTransform;
-
-/**
- *  get the CSS transformation to a element
- *
- *  @memberOf vs.util
- *
- * @param {Element} elem The element
- * @return {Transform} transform css transformations
- **/
-var getElementTransform;
-
 if (vsTestStyle && vsTestStyle.transform !== undefined)
 {
-  setElementTransform = _setElementTransform;
-  getElementTransform = _getElementTransform;
+  exports.setElementTransform = _setElementTransform;
+  exports.getElementTransform = _getElementTransform;
 }
 else if (vsTestStyle && vsTestStyle.webkitTransform !== undefined)
 {
-  setElementTransform = setElementWebkitTransform;
-  getElementTransform = getElementWebkitTransform;
+  exports.setElementTransform = setElementWebkitTransform;
+  exports.getElementTransform = getElementWebkitTransform;
 }
 else if (vsTestStyle && vsTestStyle.msTransform !== undefined)
 {
-  setElementTransform = setElementMSTransform;
-  getElementTransform = getElementMSTransform;
+  exports.setElementTransform = setElementMSTransform;
+  exports.getElementTransform = getElementMSTransform;
 }
 else if (vsTestStyle && vsTestStyle.MozTransform !== undefined)
 {
-  setElementTransform = setElementMozTransform;
-  getElementTransform = getElementMozTransform;
+  exports.setElementTransform = setElementMozTransform;
+  exports.getElementTransform = getElementMozTransform;
 }
 
 /**
@@ -1139,7 +2286,7 @@ function setElementTransformOrigin (elem, value)
 {
   if (elem && elem.style)
   {
-    elem.style ['-' + CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
+    elem.style ['-' + exports.CSS_VENDOR.toLowerCase () + '-transform-origin'] = value;
   }
   else console.warn ("setElementTransformOrigin, elem null or without style");
 }
@@ -1215,7 +2362,7 @@ function importFile (path, doc, clb, type, first)
             console.error ('CSS load of ' + path + ' failed!');
           }
           return;
-        };
+        }
         clb.call (document, path);
       })();
     }
@@ -1260,7 +2407,7 @@ function addCssRules (selector, rules)
   {
     addCssRule (selector, rules [i]);
   }
-};
+}
 
 var __app_style_sheet__ = null;
 /**
@@ -1310,13 +2457,8 @@ function addCssRule (selector, rule)
   {
     __app_style_sheet__.addRule (selector, rule, l);
   }
-};
+}
 
-
-/**
- * @private
- */
-var SET_STYLE_OPTIMIZATION = true;
 
 // /**
 //  *  Sets the active stylesheet for the HTML document according to the specified
@@ -1429,65 +2571,52 @@ const getBoundingClientRect =
   (vsTestElem && vsTestElem.getBoundingClientRect) ?
   _getBoundingClientRect_api2: _getBoundingClientRect_api1;
 
-/********************************************************************
-                         export
-*********************************************************************/
+exports.clone = clone;
+exports.isElement = isElement$1;
+exports.isArray = isArray$1;
+exports.isFunction = isFunction$1;
+exports.isString = isString$1;
+exports.isNumber = isNumber$1;
+exports.isObject = isObject;
+exports.isUndefined = isUndefined$1;
+exports.vsTestElem = vsTestElem;
+exports.vsTestStyle = vsTestStyle;
+exports.clearImmediate = clearImmediate;
+exports.setImmediate = setImmediate;
+exports.requestAnimationFrame = requestAnimationFrame;
+exports.cancelRequestAnimationFrame = cancelRequestAnimationFrame;
+exports.SUPPORT_CSS_TRANSFORM = SUPPORT_CSS_TRANSFORM;
+exports.extendClass = extendClass;
+exports.defineProperty = defineProperty;
+exports.defineClassProperty = defineClassProperty;
+exports.defineClassProperties = defineClassProperties;
+exports.free = free;
+exports.hasClassName = hasClassName;
+exports.addClassName = addClassName;
+exports.removeClassName = removeClassName;
+exports.toggleClassName = toggleClassName;
+exports.addCssRule = addCssRule;
+exports.addCssRules = addCssRules;
+exports.getElementHeight = getElementHeight;
+exports.getElementWidth = getElementWidth;
+exports.getElementDimensions = getElementDimensions;
+exports.getElementStyle = getElementStyle;
+exports.setElementStyle = setElementStyle;
+exports.setElementOpacity = setElementOpacity;
+exports.getElementOpacity = getElementOpacity;
+exports.getElementAbsolutePosition = getElementAbsolutePosition;
+exports.setElementPos = setElementPos;
+exports.setElementSize = setElementSize;
+exports.setElementVisibility = setElementVisibility;
+exports.isElementVisible = isElementVisible;
+exports.removeAllElementChild = removeAllElementChild;
+exports.safeInnerHTML = safeInnerHTML;
+exports.setElementInnerText = setElementInnerText;
+exports.getElementMatrixTransform = getElementMatrixTransform;
+exports.setElementTransformOrigin = setElementTransformOrigin;
+exports.getBoundingClientRect = getBoundingClientRect;
+exports.importFile = importFile;
 
-export {
-  vsTestElem,
-  vsTestStyle,
-  clearImmediate,
-  setImmediate,
-  requestAnimationFrame,
-  cancelRequestAnimationFrame,
+return exports;
 
-  CSS_VENDOR,
-  SUPPORT_3D_TRANSFORM,
-  SUPPORT_CSS_TRANSFORM,
-
-  // Class functions
-  extendClass,
-  defineProperty,
-  defineClassProperty,
-  defineClassProperties,
-  free,
-
-  // element class
-  hasClassName,
-  addClassName,
-  removeClassName,
-  toggleClassName,
-
-  // element style
-  addCssRule,
-  addCssRules,
-  getElementHeight,
-  getElementWidth,
-  getElementDimensions,
-  getElementStyle,
-  setElementStyle,
-  setElementOpacity,
-  getElementOpacity,
-  getElementAbsolutePosition,
-  setElementPos,
-  setElementSize,
-  setElementVisibility,
-  isElementVisible,
-  removeAllElementChild,
-  safeInnerHTML,
-  setElementInnerText,
-  setElementTransform,
-  getElementTransform,
-  getElementMatrixTransform,
-  setElementTransformOrigin,
-  getBoundingClientRect,
-
-  // // other
-  importFile,
-  // setActiveStyleSheet,
-  // preloadTemplate,
-  // _defineProperty_api1, // export only for testing purpose
-  // _defineProperty_api2, // export only for testing purpose
-  // _extend_api1, // export only for testing purpose
-  // _extend_api2 // export only for testing purpose
-};
+}({}));
