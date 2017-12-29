@@ -40,7 +40,7 @@ import CSSMatrix from './CSSMatrix'
 class Point {
   constructor(x, y) {
     this.x = isNumber(x) ? x : 0;
-    this.x = isNumber(x) ? x : 0;
+    this.y = isNumber(y) ? y : 0;
   }
 
   /*****************************************************************
