@@ -18,7 +18,7 @@
  Use code from Canto.js Copyright 2010 Steven Levithan <stevenlevithan.com>
 */
 
-import { isNumber } from './Utils'
+import { isNumber } from './is'
 import CSSMatrix from './CSSMatrix'
 
 /**
