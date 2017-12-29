@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Set of utilities functions we need for developing web app.",
   "main": "./lib/vs_utils.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "module": "es/vs_utils.js",
+  "jsnext:main": "es/vs_utils.js",
   "repository": "https://github.com/dthevenin/Util.git",
   "author": "<david.thevenin@gmail.com>",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "build:iief:min": "uglifyjs --compress --mangle -o dist/vs_utils.min.js -- dist/vs_utils.js",
     "build:es:min": "uglifyjs --compress --mangle -o es/vs_utils.min.js -- es/vs_utils.js",
     "build": "npm run build:all && npm run build:amd:min && npm run build:iief:min && npm run build:es:min",
-    "clean": "rimraf lib es",
+    "clean": "rimraf lib es dist",
     "prepublish": "npm run clean && npm run build",
     "test": "BABEL_ENV=test mocha --compilers js:babel-core/register test/*.js test/**/*.js  test/**/**/*.js"
   },
@@ -29,6 +29,7 @@
     }
   },
   "files": [
+    "dist",
     "lib",
     "src",
     "es"
