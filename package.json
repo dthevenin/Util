@@ -15,7 +15,6 @@
     "build": "npm run build:amd && npm run build:amd:min && npm run build:es",
     "clean": "rimraf lib es",
     "prepublish": "npm run clean && npm run build",
-    "testt": "BABEL_ENV=test mocha --compilers js:babel-core/register",
     "test": "BABEL_ENV=test mocha --compilers js:babel-core/register test/*.js test/**/*.js  test/**/**/*.js"
   },
   "files": [
@@ -36,7 +35,6 @@
     }
   },
   "devDependencies": {
-    "amd-loader": "^0.0.8",
     "babel-cli": "^6.3.17",
     "babel-core": "^6.3.26",
     "babel-eslint": "^7.1.1",
