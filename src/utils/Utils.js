@@ -1451,6 +1451,7 @@ export {
   defineClassProperty,
   defineClassProperties,
   free,
+  extend,
 
   // element class
   hasClassName,
