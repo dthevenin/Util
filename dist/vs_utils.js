@@ -160,7 +160,7 @@ var _toString$1 = Object.prototype.toString;
  *
  * @param {Object} object The object to test.
  **/
-function isElement$1 (object)
+function isElement (object)
 {
   return !!(object && object.nodeType === 1);
 }
@@ -180,7 +180,7 @@ function isElement$1 (object)
  *
  * @param {Object} object The object to test.
  **/
-var isArray$1 = Array.isArray ||
+var isArray = Array.isArray ||
   function (object) { return _toString$1.call (object) === ARRAY_CLASS;};
 
 /**
@@ -190,7 +190,7 @@ var isArray$1 = Array.isArray ||
  *
  * @param {Object} object The object to test.
  **/
-function isFunction$1 (object)
+function isFunction (object)
 {
   return typeof object === "function";
 }
@@ -210,7 +210,7 @@ function isFunction$1 (object)
  *
  * @param {Object} object The object to test.
  **/
-function isString$1 (object)
+function isString (object)
 {
   return _toString$1.call (object) === STRING_CLASS;
 }
@@ -233,7 +233,7 @@ function isString$1 (object)
  *
  * @param {Object} object The object to test.
  **/
-function isNumber$1 (object)
+function isNumber (object)
 {
   return (typeof object === 'number' && isFinite(object)) ||
       object instanceof Number;
@@ -295,7 +295,7 @@ function isObject (object) {
  *
  * @param {Object} object The object to test.
  **/
-function isUndefined$1 (object)
+function isUndefined (object)
 {
   return typeof object === "undefined";
 }
@@ -362,7 +362,7 @@ Array.prototype.indexOf:_findItem;
  */
 Array.prototype.remove = function (from, to)
 {
-  if ((typeof(from) === "object") || isString$1 (from))
+  if ((typeof(from) === "object") || isString (from))
   {
     var i = 0;
     while (i < this.length)
@@ -1142,8 +1142,8 @@ CSSMatrix.prototype.getMatrix3dStr = function () {
 */
 class Point {
   constructor(x, y) {
-    this.x = isNumber$1(x) ? x : 0;
-    this.y = isNumber$1(y) ? y : 0;
+    this.x = isNumber(x) ? x : 0;
+    this.y = isNumber(y) ? y : 0;
   }
 
   /*****************************************************************
@@ -2574,13 +2574,13 @@ const getBoundingClientRect =
 exports.Point = Point;
 exports.CSSMatrix = CSSMatrix;
 exports.clone = clone;
-exports.isElement = isElement$1;
-exports.isArray = isArray$1;
-exports.isFunction = isFunction$1;
-exports.isString = isString$1;
-exports.isNumber = isNumber$1;
+exports.isElement = isElement;
+exports.isArray = isArray;
+exports.isFunction = isFunction;
+exports.isString = isString;
+exports.isNumber = isNumber;
 exports.isObject = isObject;
-exports.isUndefined = isUndefined$1;
+exports.isUndefined = isUndefined;
 exports.vsTestElem = vsTestElem;
 exports.vsTestStyle = vsTestStyle;
 exports.clearImmediate = clearImmediate;

@@ -18,6 +18,15 @@
 
 import Point from './Point';
 import CSSMatrix from './CSSMatrix';
+import {
+  isElement,
+  isArray,
+  isFunction,
+  isString,
+  isNumber,
+  isObject,
+  isUndefined
+} from './is';
 
 /********************************************************************
 
