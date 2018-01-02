@@ -16,7 +16,7 @@
     "build": "npm run build:all && npm run build:amd:min && npm run build:iief:min && npm run build:es:min",
     "clean": "rimraf lib es dist",
     "prepublish": "npm run clean && npm run build",
-    "test": "BABEL_ENV=test mocha --compilers js:babel-core/register test/*.js test/**/*.js  test/**/**/*.js"
+    "test": "BABEL_ENV=test nyc mocha --compilers js:babel-core/register test/*.js test/**/*.js  test/**/**/*.js"
   },
   "babel": {
     "env": {
@@ -38,6 +38,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "mocha": "^4.0.1",
+    "nyc": "^11.4.1",
     "rollup": "^0.53.1",
     "uglify-es": "^3.3.2"
   },
