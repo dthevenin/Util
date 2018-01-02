@@ -766,7 +766,7 @@ function getElementAbsolutePosition (element, force)
     if (rec) { return new Point (rec.left, rec.top); }
   }
   var
-    x = 0, y = 0;
+    x = 0, y = 0,
     parent = element,
     borderXOffset = 0,
     borderYOffset = 0;
