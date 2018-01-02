@@ -1,6 +1,6 @@
 {
   "name": "vs_utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Set of utilities functions we need for developing web app.",
   "main": "./lib/vs_utils.js",
   "module": "es/vs_utils.js",
