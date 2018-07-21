@@ -1,6 +1,6 @@
 {
   "name": "vs_utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Set of utilities functions we need for developing web app.",
   "main": "./lib/vs_utils.js",
   "module": "es/vs_utils.js",
@@ -16,14 +16,14 @@
     "build": "npm run build:all && npm run build:amd:min && npm run build:iief:min && npm run build:es:min",
     "clean": "rimraf lib es dist",
     "prepublish": "npm run clean && npm run build",
-    "test": "BABEL_ENV=test nyc mocha --compilers js:babel-core/register test/*.js test/**/*.js  test/**/**/*.js"
+    "test": "BABEL_ENV=test nyc mocha --compilers js:@babel/register test/*.js test/**/*.js  test/**/**/*.js"
   },
   "babel": {
     "env": {
       "test": {
         "plugins": [],
         "presets": [
-          "es2015"
+          "@babel/preset-env"
         ]
       }
     }
@@ -34,13 +34,16 @@
     "es/"
   ],
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "mocha": "^4.0.1",
-    "nyc": "^11.4.1",
-    "rollup": "^0.53.1",
-    "uglify-es": "^3.3.2"
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/register": "^7.0.0-beta.54",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "rollup": "^0.63.4",
+    "uglify-es": "^3.3.9"
+  },
+  "engines": {
+    "node": ">=9.0.0"
   },
   "dependencies": {}
 }
