@@ -6,10 +6,6 @@
  * @private
  * @const
  */
-/**
- * @private
- * @const
- */
 const BOOLEAN_TYPE = 'Boolean';
 
 /**
@@ -111,7 +107,6 @@ function clone (object)
       return object;
   }
 }
-
 /**
  *  Returns a JSON string.
  *
@@ -173,7 +168,6 @@ function isElement (object)
 {
   return !!(object && object.nodeType === 1);
 }
-
 /**
  *  Returns `true` if `object` is an [[Array]]; `false` otherwise.
  *
@@ -203,7 +197,6 @@ function isFunction (object)
 {
   return typeof object === "function";
 }
-
 /**
  *  Returns `true` if `object` is an String; `false` otherwise.
  *
@@ -223,7 +216,6 @@ function isString (object)
 {
   return _toString$1.call (object) === STRING_CLASS;
 }
-
 /**
  *  Returns `true` if `object` is an Number; `false` otherwise.
  *
@@ -247,7 +239,6 @@ function isNumber (object)
   return (typeof object === 'number' && isFinite(object)) ||
       object instanceof Number;
 }
-
 /**
  *  Returns `true` if `object` is an "pure" Object; `false` otherwise.
  *
@@ -282,7 +273,6 @@ function isObject (object) {
     return false;
   }
 }
-
 /**
  *  Returns `true` if `object` is of type `undefined`; `false` otherwise.
  *
@@ -1888,7 +1878,6 @@ function getElementHeight (elem)
 
   return getElementDimensions (elem).height;
 }
-
 /**
  *  Returns the width of `element`.<br/>
  *
@@ -1906,7 +1895,6 @@ function getElementWidth (elem)
 
   return getElementDimensions (elem).width;
 }
-
 /**
  *  Finds the computed width and height of `element` and returns them as
  *  key/value pairs of an object.<br/>
@@ -1949,7 +1937,6 @@ function getElementDimensions (elem)
 
   return {width: originalWidth, height: originalHeight};
 }
-
 /**
  *  Returns the given CSS property value of `element`.<br/> The property can be
  *  specified in either its CSS form (`font-size`) or its camelized form
@@ -1987,7 +1974,6 @@ function getElementStyle (elem, style)
   if (style === 'opacity') { return value ? parseFloat (value) : 1.0; }
   return value === 'auto' ? null : value;
 }
-
 /**
  *  Modifies `element`'s CSS style properties. Styles are passed as a hash of
  *  property-value pairs in which the properties are specified in their
@@ -2028,7 +2014,6 @@ function setElementStyle (elem, styles)
     }
   }
 }
-
 /**
  *  Sets the visual opacity of an element while working around inconsistencies
  *  in various browsers. The `opacity` argument should be a floating point
@@ -2058,7 +2043,6 @@ function setElementOpacity (elem, value)
   elementStyle.opacity = (value === 1 || value === '') ? '' :
     (value < 0.00001) ? 0 : value;
 }
-
 /**
  *  Returns the opacity of the element.
  *
@@ -2073,7 +2057,6 @@ function getElementOpacity (elem)
 
   return getElementStyle (elem, 'opacity');
 }
-
 /**
  * Compute the elements position in terms of the window viewport
  * Returns a vs.Point {x, y}
@@ -2140,7 +2123,6 @@ function _getBoundingClientRect_api1 (e)
     top: rec.y
   }
 }
-
 /**
  * @private
  */
@@ -2148,7 +2130,6 @@ function _getBoundingClientRect_api2 (e)
 {
   return (e && e.getBoundingClientRect)?e.getBoundingClientRect ():null;
 }
-
 /**
  *  Set the absolute element position.
  *
@@ -2270,7 +2251,6 @@ function removeAllElementChild (elem)
     elem.removeChild (elem.firstChild);
   }
 }
-
 /**
  *  Safe set inner HTML of a element
  *
@@ -2295,7 +2275,6 @@ function safeInnerHTML (elem, html_text)
     elem.innerHTML = html_text;
   }
 }
-
 /**
  *  Set inner Text content of a element
  *
@@ -2328,7 +2307,6 @@ function setElementInnerText (elem, text)
     elem.appendChild (document.createTextNode (lines [i]));
   }
 }
-
 /**
  *@private
  */
@@ -2550,8 +2528,7 @@ function importFile (path, doc, clb, type, first)
             console.error ('CSS load of ' + path + ' failed!');
           }
           return;
-        }
-        clb.call (document, path);
+        }        clb.call (document, path);
       })();
     }
     if (!doc.head) { doc.head = doc.querySelector ('head'); }
@@ -2596,7 +2573,6 @@ function addCssRules (selector, rules)
     addCssRule (selector, rules [i]);
   }
 }
-
 var __app_style_sheet__ = null;
 /**
  *  Modifies CSS styleSheets.
@@ -2646,8 +2622,6 @@ function addCssRule (selector, rule)
     __app_style_sheet__.addRule (selector, rule, l);
   }
 }
-
-
 // /**
 //  *  Sets the active stylesheet for the HTML document according to the specified
 //  *  title.
