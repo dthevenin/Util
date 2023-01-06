@@ -1,49 +1,31 @@
 {
   "name": "vs_utils",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Set of utilities functions we need for developing web app.",
-  "main": "./lib/vs_utils.js",
-  "module": "es/vs_utils.js",
-  "jsnext:main": "es/vs_utils.js",
   "repository": "https://github.com/dthevenin/Util.git",
-  "author": "<david.thevenin@gmail.com>",
+  "author": "<david@thevenin.jp>",
   "license": "MIT",
   "scripts": {
-    "build:all": "rollup -c rollup.config.js",
-    "build:amd:min": "node_modules/uglify-es/bin/uglifyjs --compress --mangle -o lib/vs_utils.min.js -- lib/vs_utils.js",
-    "build:iief:min": "node_modules/uglify-es/bin/uglifyjs --compress --mangle -o dist/vs_utils.min.js -- dist/vs_utils.js",
-    "build:es:min": "node_modules/uglify-es/bin/uglifyjs --compress --mangle -o es/vs_utils.min.js -- es/vs_utils.js",
-    "build": "npm run build:all && npm run build:amd:min && npm run build:iief:min && npm run build:es:min",
-    "clean": "rimraf lib es dist",
-    "prepublish": "npm run clean && npm run build",
-    "test": "BABEL_ENV=test nyc mocha --compilers js:@babel/register test/*.js test/**/*.js  test/**/**/*.js"
-  },
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [],
-        "presets": [
-          "@babel/preset-env"
-        ]
-      }
-    }
+    "build": "webpack"
   },
   "files": [
-    "dist/",
-    "lib/",
     "es/"
   ],
+  "module": "lib/vs_utils.js",
+  "main": "lib/vs_utils.js",
+  "types": "lib/utils/index.d.js",
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.54",
-    "@babel/preset-env": "^7.0.0-beta.54",
-    "@babel/register": "^7.0.0-beta.54",
-    "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
-    "rollup": "^0.63.4",
-    "uglify-es": "^3.3.9"
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "parse-function": "^5.6.10"
   },
   "engines": {
-    "node": ">=9.0.0"
-  },
-  "dependencies": {}
+    "node": ">=15.0.0"
+  }
 }
