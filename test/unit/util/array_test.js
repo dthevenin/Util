@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import {} from '../../../src/utils/Array';
+import {} from '../../../src/utils/array';
 
 describe('Array', function () {
   describe('#removeAll()', function () {

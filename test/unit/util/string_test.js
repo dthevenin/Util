@@ -7,7 +7,7 @@ import {
   strip,
   htmlEncode,
   parseJSON
-} from '../../../src/utils/String';
+} from '../../../src/utils/string';
 
 describe('String helpers', function () {
   describe('#camelize()', function () {
