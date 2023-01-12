@@ -2,8 +2,13 @@ const path = require('path');
 
 module.exports = {
   mode: "production",
-  entry: './src/utils/index.ts',
-  devtool: 'inline-source-map',
+  optimization: {
+    usedExports: true
+  },
+  entry: {
+    'vs_utils': path.resolve(__dirname, 'src/utils/index.ts'),
+  },
+  // devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -11,7 +16,7 @@ module.exports = {
         use: [{
           loader: 'ts-loader',
           options: {
-            configFile: 'src/tsconfig.json'
+            configFile: 'src/tsconfig.esm.json'
           }
         }],
         exclude: /node_modules/,
@@ -19,10 +24,10 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: [ '.ts' ],
   },
   output: {
-    filename: 'vs_utils.js',
     path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js'
   },
 };

@@ -1,19 +1,20 @@
 {
   "name": "vs_utils",
-  "version": "2.0.0-beta1",
+  "version": "0.0.1",
   "description": "Set of utilities functions we need for developing web app.",
   "repository": "https://github.com/dthevenin/Util.git",
   "author": "<david@thevenin.jp>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack"
+    "clean": "rimraf dist",
+    "prepublish": "npm run clean && npm run build",
+    "tsc": "tsc -p src/tsconfig.cmj.json",
+    "build": "webpack",
+    "test": "nyc mocha test/*.js test/**/*.js  test/**/**/*.js"
   },
-  "files": [
-    "es/"
-  ],
-  "module": "lib/vs_utils.js",
-  "main": "lib/vs_utils.js",
-  "types": "lib/utils/index.d.js",
+  "main": "dist/cmj/vs_utils.js",
+  "types": "dist/cmj/utils/index.d.js",
+  "module": "dist/esm/vs_utils.js",
   "devDependencies": {
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",

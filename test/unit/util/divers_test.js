@@ -1,8 +1,6 @@
 const assert = require('assert');
 
-
-import { toJSON, clone } from '../../../src/utils/helpers';
-import { isUndefined } from '../../../src/utils/is';
+import { isUndefined, toJSON, clone } from '../../../dist/vs_utils';
 
 describe('Helpers tests', function () {
   describe('#clone()', function () {

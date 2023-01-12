@@ -2,9 +2,7 @@
   "compilerOptions": {
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "es6",
     "moduleResolution": "node",
-    "target": "es6",
     "allowJs": false,
     "lib": [
       "ES2021",
@@ -14,5 +12,7 @@
     "declaration": true,
     "declarationMap": true,
     "incremental": true,
-  }
+  },
+  "include": ["./utils"],
+  "exclude": ["node_modules"]
 }
