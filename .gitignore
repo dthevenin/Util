@@ -6,4 +6,4 @@ node_modules/
 .idea
 .nyc_output
 
-dist
+build
