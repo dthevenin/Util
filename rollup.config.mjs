@@ -12,27 +12,17 @@ export default [
     })],
     output: [
       {
-        file: `dist/vs_utils.cjs.js`,
-        format: 'cjs',
-        sourcemap: true,
-        exports: 'named',
-      },
-    ]
-  },
-  {
-    input: `src/utils/index.ts`,
-    plugins: [esbuild({
-      include: /\.[jt]sx?$/, // default, inferred from `loaders` option
-      exclude: /node_modules/, // default
-      sourceMap: true, // default
-      tsconfig: 'src/tsconfig.json'
-    })],
-    output: [
-      {
         file: `dist/vs_utils.es.js`,
         format: 'es',
         sourcemap: true,
         exports: 'named',
+      },
+      {
+        file: `dist/vs_utils.amd.js`,
+        format: 'amd',
+        sourcemap: true,
+        exports: 'named',
+        name: 'vs_utils',
       },
     ]
   },

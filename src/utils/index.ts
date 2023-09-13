@@ -1,11 +1,17 @@
 export * from './is';
-export * from './matrix';
 export * from './string';
-export * from './point';
 export * from './dimension';
 export * from './array';
-export * from './file';
 export * from './types';
-// export * from './di_container';
+export * from './json'
+export * from './helpers';
+export * from './mixins';
+export * from './await_ready';
+
+import { DIContainer } from './di_container';
+
+export { injectionToken } from './di_container';
+
+export const container = new DIContainer();
 
 export const isPowerOfTwo = (x: number): boolean => (x !== 0) && ((x & (x - 1)) === 0);

@@ -1,13 +1,9 @@
-import { STRING_CLASS } from './helpers';
-
-/********************************************************************
- Testing methods
- *********************************************************************/
+import { STRING_CLASS } from './types';
 
 /**
  * @private
  **/
-const _toString = Object.prototype.toString;
+const { toString } = Object.prototype;
 
 /**
  *  Returns `true` if `object` is a DOM node of type 1; `false` otherwise.
@@ -42,7 +38,7 @@ export const isElement = (object: any): object is HTMLElement => object?.nodeTyp
  *
  * @param {Object} object The object to test.
  **/
-export const isArray = Array.isArray;
+export const { isArray } = Array;
 
 /**
  *  Returns `true` if `object` is a Function; `false` otherwise.
@@ -66,7 +62,7 @@ export const isFunction = (object: unknown): object is Function => typeof object
  *
  * @param {Object} object The object to test.
  **/
-export const isString = (object: unknown): object is string => _toString.call (object) === STRING_CLASS;
+export const isString = (object: unknown): object is string => toString.call (object) === STRING_CLASS;
 
 /**
  *  Returns `true` if `object` is an Number; `false` otherwise.
@@ -105,14 +101,14 @@ export const isNumber = (object: unknown): object is number =>
  *  vs.helper.isObject (new Date);
  *  //-> false // YEP !
  *
- * @param {Object} object The object to test.
+ * @param {Object} obj The object to test.
  **/
-export function isObject(object: unknown): object is Record<string, any> {
+export function isObject(obj: unknown): obj is object {
   try {
-    return (Object.getPrototypeOf (object) === Object.prototype);
-} catch (e) {
-  return false;
-}
+    return (Object.getPrototypeOf (obj) === Object.prototype);
+  } catch (e) {
+    return false;
+  }
 }
 
 /**

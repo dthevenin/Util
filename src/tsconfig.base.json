@@ -13,6 +13,5 @@
     "declarationMap": true,
     "incremental": true,
   },
-  "include": ["./utils"],
   "exclude": ["node_modules"]
 }

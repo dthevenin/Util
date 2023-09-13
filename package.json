@@ -13,23 +13,26 @@
     "build": "npm run clean; npm run tsc; npm run make-bundle",
     "test": "nyc mocha test/*.js test/**/*.js  test/**/**/*.js"
   },
-  "main": "dist/cmj/vs_utils.js",
-  "types": "dist/vs_utils.d.js",
-  "module": "dist/vs_utils.esm.js",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "@types/node": "^18.14.6",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "rollup": "^3.10.0",
-    "rollup-plugin-dts": "^5.1.1",
+    "rollup": "^3.27.0",
+    "rollup-plugin-dts": "^5.3.1",
     "rollup-plugin-esbuild": "^5.0.0",
-    "typescript": "^4.9.4"
-  },
-  "dependencies": {
-    "parse-function": "^5.6.10"
+    "typescript": "^5.1.0"
   },
   "engines": {
     "node": ">=15.0.0"
-  }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/vs_utils.es.js",
+      "require": "./dist/vs_utils.amd.js",
+      "types": "./dist/vs_utils.d.js"
+    }
+  },
+  "type": "module"
 }

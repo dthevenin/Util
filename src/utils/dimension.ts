@@ -6,7 +6,7 @@
  * @param {Number} the x-coordinate value.
  * @param {Number} the y-coordinate value.
  */
-export default class Dimension {
+export class Dimension {
   constructor(public width: number, public height: number) {
   }
 }
