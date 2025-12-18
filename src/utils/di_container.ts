@@ -19,9 +19,9 @@ export const injectionToken = <T>(name: string): Token<T> => Object.freeze(new T
 export class EmptyClass {}
 
 export class DIContainer {
-  #dependencies = new Map<Token, unknown>();
-  #classes = new Map<Token, ConstructorType>();
-  #factories = new Map<Token, () => void>();
+  readonly #dependencies = new Map<Token, unknown>();
+  readonly #classes = new Map<Token, ConstructorType>();
+  readonly #factories = new Map<Token, () => void>();
 
   registerValue(token: Token, dependency: unknown): void {
     this.#dependencies.set(token, dependency);
@@ -59,16 +59,15 @@ export class DIContainer {
       }
     }
 
-    return obj as unknown as T;
+    return obj as T;
   }
 
   #injectFunction(func: () => void) {
-    return func.apply(null, []);
+    return func();
   }
 
   #injectClass(factory: ConstructorType) {
-    const F = factory.bind.apply(factory, []);
-
+    const F = factory.bind(factory);
     return new F();
   }
 }

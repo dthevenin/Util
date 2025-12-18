@@ -1,17 +1,19 @@
+import { isFloat32Array } from "./is";
+
 type ArrayT = Array<any> | Float32Array | number;
 
 export function arrayDeepClone<T extends ArrayT>(data: T): T {
   let result:ArrayT;
 
-  if (data instanceof window.Float32Array) {
-    result = new Float32Array (data.length);
+  if (isFloat32Array(data)) {
+    result = new Float32Array(data.length);
     result.set(data);
-  }  else if (data instanceof Array) {
+  } else if (Array.isArray(data)) {
     const len = data.length
-    result = new Array (len);
+    result = new Array(len);
 
     for (let i = 0; i < len; i++) {
-      result [i] = arrayDeepClone(data [i]);
+      result[i] = arrayDeepClone(data[i]);
     }
   } else result = data;
 

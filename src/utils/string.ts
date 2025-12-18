@@ -1,5 +1,3 @@
-import {isString, isArray, isDate, isObject} from './is';
-
 /********************************************************************
  String manipulation
  *********************************************************************/
@@ -11,7 +9,10 @@ const __date_reg_exp = /\/Date\((-?\d+)\)\//;
  *
  * @param {String} str String The string
  */
-export const htmlEncode = (str: string): string => str.replace (/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+export const htmlEncode = (str: string): string => str
+.replaceAll('&', "&amp;")
+.replaceAll('<', "&lt;")
+.replaceAll('>', "&gt;");
 
 /**
  *  Strips all leading and trailing whitespace from a string.
@@ -60,8 +61,8 @@ export const capitalize =(str: string): string => str.charAt(0).toUpperCase() + 
  * @param {String} str String The string
  * @return {String} the result
  */
-export const underscore = (str: string): string => str.replace (/::/g, '/')
-  .replace (/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
-  .replace (/([a-z\d])([A-Z])/g, '$1_$2')
-  .replace (/-/g, '_')
-  .toLowerCase ();
+export const underscore = (str: string): string => str.replaceAll('::', '/')
+  .replaceAll(/([A-Z]+)([A-Z][a-z])/, '$1_$2')
+  .replaceAll(/([a-z\d])([A-Z])/, '$1_$2')
+  .replaceAll('-', '_')
+  .toLowerCase();

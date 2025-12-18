@@ -17,7 +17,7 @@ const WAIT_DID_TIMEOUT = 'Did time out';
 
 export class AwaitReady implements IAwaitReady {
   protected _isReady = false;
-  #promiseHandlers: PromiseHandlers<void> = [];
+  readonly #promiseHandlers: PromiseHandlers<void> = [];
   // @ts-ignore
   #waitingTimer: NodeJS.Timeout;
   // @ts-ignore
@@ -27,7 +27,7 @@ export class AwaitReady implements IAwaitReady {
   constructor(private readonly timeOut = DEFAULT_TIME_OUT) {
   }
 
-  #onTimeout = () => {
+  readonly #onTimeout = () => {
     this.#promiseHandlers.forEach(({reject}) => reject(WAIT_DID_TIMEOUT));
     this.#promiseHandlers.length = 0;
   }

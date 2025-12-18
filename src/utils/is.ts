@@ -139,3 +139,7 @@ export const isUndefined = (object: unknown): object is undefined => typeof obje
  * * @param {Object} object The object to test.
  *  **/
 export const isDate = (object: unknown): object is Date => object instanceof Date;
+
+export const isFloat32Array = (value: unknown): value is Float32Array =>
+  Object.prototype.toString.call(value) === '[object Float32Array]';
+

@@ -2,7 +2,7 @@ import { isDate, isString } from './is';
 
 function dateJSONReplacer(key: string, value: unknown): unknown {
   if (isDate(value)) {
-    return `\\/Date${value.getTime()}\\/`;
+    return String.raw`\/Date${value.getTime()}\/`;
   }
   return value;
 }
@@ -17,11 +17,11 @@ export function toJSON(value: unknown): string {
 
 const DATE_REG_EXP = /\/Date\((-?\d+)\)\//;
 
-function dateJSONReviver(key: string, value: unknown): Date | unknown {
+function dateJSONReviver(key: string, value: unknown) {
   if (isString(value)) {
     const result = DATE_REG_EXP.exec(value);
-    if (result && result[1]) { // JSON Date -> Date generation
-      return new Date(parseInt(result[1], 10));
+    if (result?.[1]) { // JSON Date -> Date generation
+      return new Date(Number.parseInt(result[1], 10));
     }
   }
   return value;
