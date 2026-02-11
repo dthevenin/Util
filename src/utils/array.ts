@@ -22,7 +22,7 @@ export function arrayDeepClone<T extends ArrayT>(data: T): T {
 
 export function arrayRemove<T>(array: Array<T>, entry: T): Array<T> {
   const idx = array?.indexOf(entry);
-  if (idx >= -1) {
+  if (idx >= 0) {
     array.splice(idx, 1);
   }
   return array;
