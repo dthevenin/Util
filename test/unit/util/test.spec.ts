@@ -1,7 +1,6 @@
 import assert from 'assert';
 
 import {
-  isElement,
   isArray,
   isFunction,
   isString,
@@ -12,14 +11,15 @@ import {
 
 
 describe('IS test helpers', function () {
-  describe('#isArray()', function () {
+  it('#isArray()', function () {
     // var node = document.createElement ('div');
-    
+
     assert.equal(true, isArray([]));
     assert.equal(true, isArray([0]));
     assert.equal(true, isArray([0, 1]));
     assert.equal(false, isArray({}));
     // assert.equal(false, isArray(node.childNodes));
+    // @ts-expect-error testing a call without argument
     assert.equal(false, isArray());
     assert.equal(false, isArray(''));
     assert.equal(false, isArray('foo'));
@@ -32,22 +32,22 @@ describe('IS test helpers', function () {
   });
 
 
-  // describe('#isElement()', function () {
+  // it('#isElement()', function () {
   //   var node = document.createElement('div');
   //   assert.equal(true, isElement(node));
   //   assert.equal(false, isElement(document.createTextNode('bla')));
 
   //   // falsy variables should not mess up return value type
-  //   this.assert.equal(false, isElement(0));
-  //   this.assert.equal(false, isElement(''));
-  //   this.assert.equal(false, isElement(NaN));
-  //   this.assert.equal(false, isElement(null));
-  //   this.assert.equal(false, isElement(undefined));
+  //   assert.equal(false, isElement(0));
+  //   assert.equal(false, isElement(''));
+  //   assert.equal(false, isElement(NaN));
+  //   assert.equal(false, isElement(null));
+  //   assert.equal(false, isElement(undefined));
   // });
 
-  describe('#isFunction()', function () {
+  it('#isFunction()', function () {
     // var node = document.createElement ('div');
-    
+
     assert.equal(true, isFunction(function() { }));
     assert.equal(false, isFunction("a string"));
     // assert.equal(false, isFunction(node));
@@ -58,7 +58,7 @@ describe('IS test helpers', function () {
     assert.equal(false, isFunction(undefined));
   });
 
-  describe('#isString()', function () {
+  it('#isString()', function () {
     assert.equal(true, !isString(function() { }));
     assert.equal(true, isString("a string"));
     assert.equal(true, isString(new String("a string")));
@@ -69,7 +69,7 @@ describe('IS test helpers', function () {
     assert.equal(true, !isString(undefined));
   });
 
-  describe('#isNumber()', function () {
+  it('#isNumber()', function () {
     assert.equal(true, isNumber(0));
     assert.equal(true, isNumber(1.0));
     assert.equal(true, isNumber(new Number(0)));
@@ -83,7 +83,7 @@ describe('IS test helpers', function () {
     assert.equal(false, isNumber(undefined));
   });
 
-  describe('#isObject()', function () {
+  it('#isObject()', function () {
     assert.equal(false, isObject(0));
     assert.equal(false, isObject(1.0));
     assert.equal(false, isObject(new Number(0)));
@@ -97,7 +97,7 @@ describe('IS test helpers', function () {
     assert.equal(false, isObject(undefined));
   });
 
-  describe('#isUndefined()', function () {
+  it('#isUndefined()', function () {
     assert.equal(true, isUndefined(undefined));
     assert.equal(false, isUndefined(null));
     assert.equal(false, isUndefined(false));

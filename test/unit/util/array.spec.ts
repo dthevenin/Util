@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { arrayDeepClone, arrayRemove } from '../../../dist/vs_utils.es.js';
+import { arrayDeepClone, arrayRemove } from '../../../src/utils/array';
 
 describe('arrayDeepClone', function () {
   it('should clone an empty array', function () {
@@ -70,7 +70,7 @@ describe('arrayRemove', function () {
   });
 
   it('should handle an empty array', function () {
-    const arr = [];
+    const arr: string[] = [];
     const result = arrayRemove(arr, 'x');
     assert.deepStrictEqual(result, []);
   });

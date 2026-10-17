@@ -62,7 +62,7 @@ export const capitalize =(str: string): string => str.charAt(0).toUpperCase() + 
  * @return {String} the result
  */
 export const underscore = (str: string): string => str.replaceAll('::', '/')
-  .replaceAll(/([A-Z]+)([A-Z][a-z])/, '$1_$2')
-  .replaceAll(/([a-z\d])([A-Z])/, '$1_$2')
+  .replaceAll(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+  .replaceAll(/([a-z\d])([A-Z])/g, '$1_$2')
   .replaceAll('-', '_')
   .toLowerCase();

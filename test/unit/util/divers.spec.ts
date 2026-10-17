@@ -4,24 +4,25 @@ import { isUndefined, toJSON, clone } from '../../../src/utils';
 
 describe('Helpers tests', function () {
   describe('#clone()', function () {
-    var object = {foo: 'foo', bar: [1, 2, 3]};
-    
+    const object: { foo: string, bar?: number[] } = { foo: 'foo', bar: [1, 2, 3] };
+
     it('should clone null', () => assert.strictEqual(null, clone(null)));
     it('should clone undefined', () => {
-      assert.strictEqual(true, isUndefined (clone(undefined)));
+      assert.strictEqual(true, isUndefined(clone(undefined)));
+      // @ts-expect-error testing a call without argument
       assert.strictEqual(true, isUndefined(clone()));
     });
     it('should clone a string', () => assert.strictEqual("test", clone("test")));
     it('should clone object', () => {
-      assert.deepStrictEqual(object, clone(object));    
-      var newObj = clone(object);
+      assert.deepStrictEqual(object, clone(object));
+      const newObj = clone(object);
       delete newObj.bar;
       assert.deepStrictEqual({ foo: 'foo' }, newObj);
     });
   });
 
   describe('#toJSON()', function () {
-    var object = {};
+    const object: { K?: unknown } = {};
     it('should return undefined', () => {
       assert.strictEqual(true, isUndefined(toJSON(undefined)));
       assert.strictEqual(true, isUndefined(toJSON(object.K)));
@@ -51,10 +52,8 @@ describe('Helpers tests', function () {
     it('should manage null', () => assert.strictEqual('null', toJSON(null)));
     // var element = document.createElement ('div');
     // element.toJSON = function(){return 'I\'m a div with id test'};
-    
+
     // // marche pas
     // assertEquals ('ObjectToJSON 19', '"I\'m a div with id test"', toJSON(element));
   });
 });
-
-

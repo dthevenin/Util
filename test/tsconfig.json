@@ -1,0 +1,14 @@
+{
+  "extends": "../src/tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "ES2020",
+    "noEmit": true,
+    "composite": false,
+    "incremental": false,
+    "declaration": false,
+    "declarationMap": false,
+    "types": ["node", "mocha"]
+  },
+  "include": ["./**/*.ts"]
+}

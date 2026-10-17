@@ -5,9 +5,9 @@ import {
   capitalize,
   underscore,
   strip,
-  htmlEncode,
-  parseJSON
+  htmlEncode
 } from '../../../src/utils/string';
+import { parseJSON } from '../../../src/utils/json';
 
 describe('String helpers', function () {
   describe('#camelize()', function () {
@@ -114,7 +114,7 @@ describe('String helpers', function () {
 
     it('should return a string', function () {
       assert.strictEqual('foo', parseJSON('"foo"'));
-      assert.strictEqual('hello world!', parseJSON(valid).test);
+      assert.strictEqual('hello world!', parseJSON<{ test: string }>(valid)?.test);
     });
     
     it('should return empty array', function () {
@@ -135,7 +135,7 @@ describe('String helpers', function () {
     });
 
     it('should return a date', function () {
-      assert.strictEqual(date.toString(), parseJSON(date_str).date.toString());
+      assert.strictEqual(date.toString(), parseJSON<{ date: Date }>(date_str)?.date.toString());
     });
 
     it('should return an object', function () {

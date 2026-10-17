@@ -11,8 +11,9 @@ export function clone<T>(obj: T): T {
     return obj;
   }
 
-  if (isObject(obj) && 'clone' in obj && isFunction(obj.clone)) {
-    return obj.clone();
+  const value: unknown = obj;
+  if (isObject(value) && 'clone' in value && isFunction(value.clone)) {
+    return value.clone() as T;
   }
 
   return structuredClone(obj);
@@ -47,4 +48,11 @@ export function isEmpty<T extends NotNullableParameter>(value: T | null | undefi
 
 export function isNotEmpty<T extends NotNullableParameter>(value: T | null | undefined): boolean {
   return !isEmpty(value);
+}
+
+export function defined<T>(value: T | null | undefined, msg?: string): T {
+  if (value === null || value === undefined) {
+    throw new Error(msg || 'Value is not defined');
+  }
+  return value;
 }
