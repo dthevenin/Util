@@ -8,6 +8,7 @@ export * from './json'
 export * from './helpers';
 export * from './mixins';
 export * from './await_ready';
+export * from './errors';
 
 import { DIContainer } from './di_container';
 
