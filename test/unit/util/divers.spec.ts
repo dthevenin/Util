@@ -1,6 +1,7 @@
 import assert from 'assert';
 
 import { isUndefined, toJSON, clone } from '../../../src/utils';
+import { parseJSON } from '../../../src/utils/json';
 
 describe('Helpers tests', function () {
   describe('#clone()', function () {
@@ -50,6 +51,16 @@ describe('Helpers tests', function () {
     it('should manage true', () => assert.strictEqual('true', toJSON(true)));
     it('should manage false', () => assert.strictEqual('false', toJSON(false)));
     it('should manage null', () => assert.strictEqual('null', toJSON(null)));
+    it('should manage a date', () => assert.strictEqual('"/Date(1326814228756)/"', toJSON(new Date(1326814228756))));
+    it('should manage a date before 1970', () => assert.strictEqual('"/Date(-1000)/"', toJSON(new Date(-1000))));
+    it('should manage nested dates', () => {
+      assert.strictEqual('{"a":{"date":"/Date(0)/"},"list":["/Date(1)/"]}',
+        toJSON({ a: { date: new Date(0) }, list: [new Date(1)] }));
+    });
+    it('should give back the dates with parseJSON()', () => {
+      const data = { date: new Date(1326814228756), nested: { dates: [new Date(-1000), new Date(0)] }, text: 'x' };
+      assert.deepStrictEqual(parseJSON(toJSON(data)), data);
+    });
     // var element = document.createElement ('div');
     // element.toJSON = function(){return 'I\'m a div with id test'};
 

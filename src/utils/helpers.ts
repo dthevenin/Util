@@ -46,7 +46,7 @@ export function isEmpty<T extends NotNullableParameter>(value: T | null | undefi
   return Object.entries(value).length === 0;
 }
 
-export function isNotEmpty<T extends NotNullableParameter>(value: T | null | undefined): boolean {
+export function isNotEmpty<T extends NotNullableParameter>(value: T | null | undefined) : value is T {
   return !isEmpty(value);
 }
 

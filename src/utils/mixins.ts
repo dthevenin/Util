@@ -1,12 +1,17 @@
+type MixinHook = (this: SupportMixins) => void;
+
 export class SupportMixins {
   constructor() {
     // @ts-ignore
-    this.__inits.forEach(f => f());
+    (this.__inits as MixinHook[] | undefined)?.forEach(f => f.call(this));
   }
 
+  /**
+   * Calls the releaseMixin() of the mixins, with this instance
+   */
   release() {
     // @ts-ignore
-    this.__releases.forEach(f => f());
+    (this.__releases as MixinHook[] | undefined)?.forEach(f => f.call(this));
   }
 }
 
@@ -17,11 +22,14 @@ export abstract class Mixin {
 
 // This can live anywhere in your codebase:
 export function applyMixins(derivedCtor: typeof SupportMixins, constructors: (typeof Mixin)[]): void {
+  const proto = derivedCtor.prototype as { __inits?: MixinHook[], __releases?: MixinHook[] };
+
+  // hooks lists of this class: created once (not per mixin), keeping the
+  // hooks inherited from a parent class
+  if (!Object.prototype.hasOwnProperty.call(proto, '__inits')) proto.__inits = [...(proto.__inits ?? [])];
+  if (!Object.prototype.hasOwnProperty.call(proto, '__releases')) proto.__releases = [...(proto.__releases ?? [])];
+
   constructors.forEach(baseCtor => {
-    // @ts-ignore
-    derivedCtor.prototype.__inits = [];
-    // @ts-ignore
-    derivedCtor.prototype.__releases = [];
     // @ts-ignore
     Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
       if (name === 'initMixin') {

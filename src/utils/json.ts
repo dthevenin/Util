@@ -1,8 +1,14 @@
 import { isDate, isString } from './is';
 
-function dateJSONReplacer(key: string, value: unknown): unknown {
-  if (isDate(value)) {
-    return String.raw`\/Date${value.getTime()}\/`;
+/**
+ * Serializes the dates as "/Date(<ms>)/" (see dateJSONReviver).
+ * JSON.stringify calls Date.prototype.toJSON before the replacer, so value is
+ * already an ISO string: the date is read from the holder object (this).
+ */
+function dateJSONReplacer(this: Record<string, unknown>, key: string, value: unknown): unknown {
+  const original = this[key];
+  if (isDate(original)) {
+    return `/Date(${original.getTime()})/`;
   }
   return value;
 }
