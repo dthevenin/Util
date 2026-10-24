@@ -48,6 +48,7 @@ export class DIContainer {
       if (this.#factories.has(token)) {
         const func = this.#factories.get(token);
         this.#dependencies.set(token, func && this.#injectFunction(func));
+        obj = this.#dependencies.get(token);
       } else if (this.#classes.has(token)) {
         const factory = this.#classes.get(token);
         this.#dependencies.set(token, factory && this.#injectClass(factory));
