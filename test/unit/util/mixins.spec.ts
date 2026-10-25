@@ -58,6 +58,11 @@ describe('mixins', function () {
       ['greeter init', 'counter init', 'greeter release', 'counter release']);
   });
 
+  it('should keep the constructor of the class', function () {
+    assert.strictEqual(Target.prototype.constructor, Target);
+    assert.strictEqual(new Target().constructor, Target);
+  });
+
   it('should support a class without mixins', function () {
     class Plain extends SupportMixins {}
     assert.doesNotThrow(() => new Plain().release());

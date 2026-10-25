@@ -32,6 +32,9 @@ export function applyMixins(derivedCtor: typeof SupportMixins, constructors: (ty
   constructors.forEach(baseCtor => {
     // @ts-ignore
     Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+      // keep the constructor of the class
+      if (name === 'constructor') return;
+
       if (name === 'initMixin') {
         // @ts-ignore
         derivedCtor.prototype.__inits.push(baseCtor.prototype[name]);
